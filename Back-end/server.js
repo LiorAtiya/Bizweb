@@ -1,23 +1,30 @@
+require('dotenv').config
 const express = require("express");
-const app = express();
 const mongoose = require("mongoose");
-app.use(express.json());
 const cors = require("cors");
-app.use(cors());
+const bodyParser = require('body-parser')
 const bcrypt = require("bcryptjs");
-
 const jwt = require("jsonwebtoken")
 const JWT_SECRET = "fdsfdsdcdswere()fdsfds32423fscdsf343fdfdfdfxasdggg"
+
+const app = express();
+app.use(express.json());
+app.use(cors());
+app.use(bodyParser.json())
 
 //============ Connection to database ================
 const mongoURL = "mongodb+srv://lior:054132857@cluster0.u5khzof.mongodb.net/?retryWrites=true&w=majority"
 mongoose.connect(mongoURL, {
+    
+// mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
 })
-.then(() => {
-    console.log("Connected to database");
-})
-.catch((e) => console.log(e));
+    .then(() => {
+        console.log("Connected to database");
+    })
+    .catch((e) => console.log(e));
+
+app.use('/api/calender', require('./Controllers/CalanderController'))
 
 require("./userDetails")
 //Link to schema of userinfo
@@ -30,9 +37,9 @@ app.post("/register", async (req, res) => {
     const encrypedPassword = await bcrypt.hash(password, 10);
 
     try {
-        const oldUser = await User.findOne({email});
-        if(oldUser) {
-            return res.send({status:"User Exists"});
+        const oldUser = await User.findOne({ email });
+        if (oldUser) {
+            return res.send({ status: "User Exists" });
         }
         await User.create({
             fname,
@@ -40,9 +47,9 @@ app.post("/register", async (req, res) => {
             email,
             password: encrypedPassword,
         });
-        res.send({status: "ok"})
+        res.send({ status: "ok" })
     } catch (error) {
-        res.send({status: "error"})
+        res.send({ status: "error" })
     }
 })
 
@@ -50,19 +57,19 @@ app.post("/login-user", async (req, res) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    if(!user) {
+    if (!user) {
         return res.json({ error: "User Not Found" });
-    } 
-    if (await bcrypt.compare(password, user.password)){
-        const token = jwt.sign({email:user.email} , JWT_SECRET);
+    }
+    if (await bcrypt.compare(password, user.password)) {
+        const token = jwt.sign({ email: user.email }, JWT_SECRET);
 
         if (res.status(201)) {
-            return res.json({ status: "ok", data: token});
+            return res.json({ status: "ok", data: token });
         } else {
-            return res.json({ status: "error"});
+            return res.json({ status: "error" });
         }
     }
-    res.json({ status: "error", error: "Invalid Password"})
+    res.json({ status: "error", error: "Invalid Password" })
 })
 
 app.post("/userData", async (req, res) => {
@@ -73,12 +80,12 @@ app.post("/userData", async (req, res) => {
 
         const useremail = user.email;
         User.findOne({ email: useremail })
-        .then((data) => {
-            res.send({status: "ok", data: data})
-        }).catch((error) => {
-            res.send({status: "error"})
-        })
-    } catch (error) {}
+            .then((data) => {
+                res.send({ status: "ok", data: data })
+            }).catch((error) => {
+                res.send({ status: "error" })
+            })
+    } catch (error) { }
 })
 
 // app.post("/post", async (req,res) => {
@@ -94,7 +101,7 @@ app.post("/userData", async (req, res) => {
 //     } catch (error) {
 //         res.send({ status: "Something went wrong try again" });
 //     }
-    
+
 // })
 
 // require("./userDetails");

@@ -3,8 +3,12 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+//for robofriends
 import 'tachyons';
 import { BusinessProvider } from "./context"
+
+//for calender
+import "react-datetime/css/react-datetime.css";
 
 ReactDOM.render(
     <BusinessProvider>

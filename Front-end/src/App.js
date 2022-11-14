@@ -12,6 +12,9 @@ import SingleBusiness from './pages/SingleBusiness'
 
 import { BrowserRouter as Router,Switch,Route} from "react-router-dom";
 
+import Modal from 'react-modal'
+Modal.setAppElement('#root')
+
 class App extends Component {
 
     render() {
@@ -23,7 +26,7 @@ class App extends Component {
                     <Route exact path="/" component={Home} />
                     <Route exact path="/login" component={Login} />
                     <Route exact path="/register" component={Register} />
-                    <Route exact path="/category" component={Category} />
+                    <Route exact path="/category/:type" component={Category} />
                     <Route path="/business/:slug" component={SingleBusiness} />
                     <Route path="*" component={Error} />
                 </Switch>

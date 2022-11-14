@@ -1,28 +1,28 @@
 import React , { Component } from 'react';
-import CardList from '../components/CardList';
+// import CardList from '../components/CardList';
 import SearchBox from '../components/SearchBox';
 // import Scroll from '../components/Scroll';
 import '../App.css';
-import ErrorBoundry from '../components/ErrorBoundry';
+// import ErrorBoundry from '../components/ErrorBoundry';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import categories from '../database/categories';
 import Hero from '../components/Hero';
 import Banner from '../components/Banner'
 // import {Link} from 'react-router-dom'
 import Services from '../components/Services';
-import FeatureBusiness from './FeatureBusiness'
+import FeatureBusiness from './CategoryBusiness'
 
 class Home extends Component {
     constructor() {
         super()
         this.state = { // תיאור של מה שבונים
-            robots: [],
+            category: [],
             searchfield: ''
         }
     }
 
     componentDidMount() {
-        this.setState({robots: categories})
+        this.setState({category: categories})
         // fetch('https://jsonplaceholder.typicode.com/users') // פונקציה לבקש בקשה מהשרת
         // .then(response => response.json())
         // .then(users => this.setState({ robots: users }));
@@ -34,10 +34,10 @@ class Home extends Component {
 
     render() {
 
-        const filteredRobots = this.state.robots.filter(robot =>{
-            return robot.name.toLowerCase().includes(this.state.searchfield.toLowerCase()) // לסנן כל ערך שמכיל את מה שנכתב בתיבת חיפוש
+        const filteredCategories = this.state.category.filter(category =>{
+            return category.name.toLowerCase().includes(this.state.searchfield.toLowerCase()) // לסנן כל ערך שמכיל את מה שנכתב בתיבת חיפוש
         })
-        if (this.state.robots.length === 0){
+        if (this.state.category.length === 0){
             return <Hero><h1>Loading</h1></Hero>
         } else {
             return ( 
@@ -51,17 +51,14 @@ class Home extends Component {
                         {/* <h1 className='f2'>Facework</h1>
                         <h4 style={{color:"white"}}>Social network for businesses</h4> */}
                         {/* <hr></hr> */}
-                         
                         {/* <Scroll> */}
-                        <ErrorBoundry>
-                        <br></br>
-                        <h2>Categories</h2>
-                        <CardList robots={filteredRobots} />
-                        </ErrorBoundry>
+                        {/* <ErrorBoundry> */}
+                        {/* <CardList category={filteredCategories} /> */}
+                        {/* </ErrorBoundry> */}
                         {/* </Scroll> */}
                     </div>
                 </Hero>
-                <FeatureBusiness />
+                <FeatureBusiness categories={filteredCategories}/>
                 <Services/>
                 </>
             );

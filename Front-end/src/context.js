@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import items from "./data"
+import categories from './database/categories';
 
 const BusinessContext = React.createContext();
 
 export default class BusinessProvider extends Component {
     state = {
+        categoryBusiness: [],
         business: [],
         sortedBusiness: [],
         featuredBusiness: [],
@@ -22,6 +24,9 @@ export default class BusinessProvider extends Component {
 
     //getData
     componentDidMount() {
+        //set list of categories
+        this.setState({categoryBusiness: categories})
+
         let business = this.formatData(items);
         let featuredBusiness = business.filter(busi => busi.featured === true);
         let maxPrice = Math.max(...business.map(item => item.price))
@@ -75,8 +80,8 @@ export default class BusinessProvider extends Component {
             type,
             capacity,
             price,
-            minPrice,
-            maxPrice,
+            // minPrice,
+            // maxPrice,
             minSize,
             maxSize,
             breakfast,
