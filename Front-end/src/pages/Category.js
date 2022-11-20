@@ -1,46 +1,46 @@
-import React, { Component } from 'react'
+import React from 'react'
 import Banner from '../components/Banner'
-import { Link } from 'react-router-dom/cjs/react-router-dom.min'
-import BusinessContainer from '../components/BusinessContainer'
+import { Link, useParams } from 'react-router-dom/cjs/react-router-dom.min'
+import BusinessContainer from '../components/category/BusinessContainer'
 import Hero from '../components/Hero'
 
-export default class Category extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      type: this.props.match.params.type,
-    }
-  }
+export default function Category() {
+  let { type } = useParams();
 
-  render() {
-    return (
-      <>
-        <Hero hero="roomsHero">
-          <Banner title={this.state.type}>
-            <Link to="/" className="btn-primary">
-              return home
-            </Link>
-          </Banner>
-        </Hero>
-        <BusinessContainer />
-      </>
-    )
-  }
+  return (
+    <>
+    <Hero hero="roomsHero">
+      <Banner title={type}>
+        <Link to="/" className="btn-primary">
+          return home
+        </Link>
+      </Banner>
+    </Hero>
+    <BusinessContainer />
+  </>
+  )
 }
 
+// export default class Category extends Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       type: this.props.match.params.type,
+//     }
+//   }
 
-// export default function Category() {
-
-//   return (
-//     <>
+//   render() {
+//     return (
+//       <>
 //         <Hero hero="roomsHero">
-//             <Banner title={name}>
-//                 <Link to="/" className="btn-primary">
-//                 return home
-//                 </Link>
-//             </Banner>
+//           <Banner title={this.state.type}>
+//             <Link to="/" className="btn-primary">
+//               return home
+//             </Link>
+//           </Banner>
 //         </Hero>
 //         <BusinessContainer />
-//     </>
-//   )
+//       </>
+//     )
+//   }
 // }

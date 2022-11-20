@@ -5,15 +5,19 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 //for robofriends
 import 'tachyons';
-import { BusinessProvider } from "./context"
+import { BusinessProvider } from "./context/BusinessContext"
+import { AuthContextProvider } from './context/AuthContext';
 
 //for calender
-import "react-datetime/css/react-datetime.css";
+// import "react-datetime/css/react-datetime.css";
 
 ReactDOM.render(
-    <BusinessProvider>
-        <App />
-    </BusinessProvider>
+
+    <AuthContextProvider>
+        <BusinessProvider>
+            <App />
+        </BusinessProvider>
+    </AuthContextProvider>
 
     , document.getElementById('root'));
 

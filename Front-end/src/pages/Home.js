@@ -1,16 +1,12 @@
 import React , { Component } from 'react';
-// import CardList from '../components/CardList';
-import SearchBox from '../components/SearchBox';
-// import Scroll from '../components/Scroll';
+import SearchBox from '../components/home/SearchBox';
 import '../App.css';
-// import ErrorBoundry from '../components/ErrorBoundry';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import categories from '../database/categories';
 import Hero from '../components/Hero';
 import Banner from '../components/Banner'
-// import {Link} from 'react-router-dom'
-import Services from '../components/Services';
-import FeatureBusiness from './CategoryBusiness'
+import Services from '../components/home/Services';
+import CategoryBusiness from '../components/home/CategoryBusiness'
 
 class Home extends Component {
     constructor() {
@@ -48,17 +44,9 @@ class Home extends Component {
                         {/* <Link to='/register' className='btn-primary'>Register</Link> */}
                         <SearchBox searchChange={this.onSearchChange} />
                     </Banner>
-                        {/* <h1 className='f2'>Facework</h1>
-                        <h4 style={{color:"white"}}>Social network for businesses</h4> */}
-                        {/* <hr></hr> */}
-                        {/* <Scroll> */}
-                        {/* <ErrorBoundry> */}
-                        {/* <CardList category={filteredCategories} /> */}
-                        {/* </ErrorBoundry> */}
-                        {/* </Scroll> */}
                     </div>
                 </Hero>
-                <FeatureBusiness categories={filteredCategories}/>
+                <CategoryBusiness categories={filteredCategories}/>
                 <Services/>
                 </>
             );
