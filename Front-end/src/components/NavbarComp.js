@@ -9,7 +9,7 @@ export default function NavbarComp() {
   // const {user} = useContext(AuthContext)
   let history = useHistory();
 
-  const getUserData = JSON.parse(localStorage.getItem('token')) || null;
+  const getUserData = JSON.parse(localStorage.getItem('token'));
 
   const logOut = () => {
     alert('Log out successfuly');

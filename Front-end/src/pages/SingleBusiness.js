@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import defaultBcg from "../images/room-1.jpeg"
 // import { BusinessContext } from "../context"
 import { Link } from 'react-router-dom'
@@ -8,9 +8,6 @@ import StyledHero from '../components/StyledHero'
 //Gallery
 import { GalleryCard } from '../components/singleBusiness/GalleryCard'
 import { Container, Row, Col, Tab, Nav } from "react-bootstrap";
-import projImg1 from "../assets/img/project-img1.png";
-import projImg2 from "../assets/img/project-img2.png";
-import projImg3 from "../assets/img/project-img3.png";
 import TrackVisibility from 'react-on-screen';
 
 import Calender from '../components/singleBusiness/Calender'
@@ -18,59 +15,45 @@ import Reviews from '../components/singleBusiness/Reviews'
 import Googlemap from '../components/singleBusiness/Googlemap'
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min'
 import { BusinessContext } from '../context/BusinessContext'
+import axios from 'axios'
 
 export default function SingleBusiness() {
 
   let { name } = useParams();
   const context = useContext(BusinessContext)
 
+  //get data of business
   const { getBusiness } = context;
   const business = getBusiness(name);
 
-  // const [business, setBusiness] = useState({});
+  //data of all images
+  const [data, setData] = useState([]);
 
-  //get data of business from the server
+  const [imageName, setImageName] = useState("");
+
   useEffect(() => {
-
-    // const fetchBusiness = async () => {
-    //   const res = await axios.get("http://localhost:5015/api/business/637611b498c6e14eef62b158")
-    //   setBusiness(res.data)
-    // }
-    // fetchBusiness();
+    //get all images of the business from mongodb
+    axios.get('http://localhost:5015/business/gallery').
+      then((res) => setData(res.data)).
+      catch((err) => console.log(err));
   }, []);
 
-  const projects = [
-    {
-      title: "Business Startup",
-      description: "Design & Development",
-      imgUrl: projImg1,
-    },
-    {
-      title: "Business Startup",
-      description: "Design & Development",
-      imgUrl: projImg2,
-    },
-    {
-      title: "Business Startup",
-      description: "Design & Development",
-      imgUrl: projImg3,
-    },
-    {
-      title: "Business Startup",
-      description: "Design & Development",
-      imgUrl: projImg1,
-    },
-    {
-      title: "Business Startup",
-      description: "Design & Development",
-      imgUrl: projImg2,
-    },
-    {
-      title: "Business Startup",
-      description: "Design & Development",
-      imgUrl: projImg3,
-    },
-  ];
+  const handleImage = (e) => {
+    setImageName(e.target.files[0]);
+  }
+
+  const uploadImage = async () => {
+
+    let formData = new FormData();
+    formData.append('image', imageName)
+    formData.append('name', "image1");
+
+    //send request to server for upload new image
+    await axios.post('http://localhost:5015/business/gallery', formData).
+      then((res) => console.log(res.data)).
+      catch((err) => console.log(err));
+      window.location.reload(false);
+  }
 
   return (
     <>
@@ -110,15 +93,21 @@ export default function SingleBusiness() {
                           </Nav>
                           <Tab.Content id="slideInUp" className={isVisible ? "animate__animated animate__slideInUp" : ""}>
                             <Tab.Pane eventKey="first">
+                              <div>
+                                <label htmlFor='file'>Choose image</label>
+                                <br></br>
+                                <input type="file" filename="image"
+                                  onChange={handleImage} />
+                                <br></br>
+                                <button onClick={uploadImage}>Upload</button>
+                              </div>
                               <Row>
                                 {
-                                  projects.map((project, index) => {
-                                    return (
-                                      <GalleryCard
-                                        key={index}
-                                        {...project}
-                                      />
-                                    )
+                                  data.reverse().map((singleData, i) => {
+                                    const base64String = btoa(
+                                      String.fromCharCode(...new Uint8Array(singleData.img.data.data))
+                                    );
+                                    return <GalleryCard src={`data:image/png;base64,${base64String}`} key={i}/>
                                   })
                                 }
                               </Row>

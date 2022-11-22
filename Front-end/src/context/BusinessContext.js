@@ -30,7 +30,6 @@ export default class BusinessProvider extends Component {
         await axious.get("http://localhost:5015/api/business")
             .then((res) => {
                 if (res.status === 200) {
-                    console.log(res.data);
                     this.setState({ business: res.data, sortedBusiness: res.data })
                 }
             })
