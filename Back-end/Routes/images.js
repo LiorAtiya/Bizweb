@@ -17,7 +17,7 @@ const upload = multer({
 });
 
 //Upload picture
-router.post("/business/gallery", upload.single("image"), (req, res) => {
+router.post("/", upload.single("image"), (req, res) => {
     console.log(req.body.name);
     const saveImage = new imageModel({
         name: req.body.name,
@@ -35,9 +35,9 @@ router.post("/business/gallery", upload.single("image"), (req, res) => {
         res.send(saveImage);
 })
 
-//get all pictures
-router.get('/business/gallery', async (req,res) => {
-    const allData = await imageModel.find();
+//get gallery of business
+router.get('/:id', async (req,res) => {
+    const allData = await imageModel.find({name: req.params.id});
     res.json(allData);
 })
 

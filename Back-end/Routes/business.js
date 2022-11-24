@@ -15,14 +15,14 @@ router.post('/add', async (req, res) => {
 
         //create new business
         const business = await Business.create({
-                        category,
-                        name,
-                        description,
-                        gallery,
-                        reviews,
-                        calender,
-                        location,
-                    });
+            category,
+            name,
+            description,
+            gallery,
+            reviews,
+            calender,
+            location,
+        });
         res.send(business);
     } catch (error) {
         res.send({ status: "error" })
@@ -70,23 +70,31 @@ router.get("/", async (req, res) => {
 })
 
 
-//Add picture to gallery
-router.put("/:id/gallery", async (req, res) => {
-    if (req.body.userId == req.params.id) {
+//Add new review
+router.put("/:id/reviews", async (req, res) => {
+    if (req.body.userID == req.params.id) {
         try {
-            //Add new picture
-            await Business.updateOne({ $push: { gallery: req.body } })
+            //Add new review
+            await Business.findByIdAndUpdate({ _id: req.params.id }, { $push: { reviews: req.body.details } })
+            console.log("Added new review");
+            res.send("OK - 200 ");
         } catch (err) {
             res.status(500).json(err);
         }
-    } else {
-
     }
 })
 
+//Get all reviews of business
+router.get("/:id/reviews", async (req, res) => {
+    try {
+        const user = await Business.findById(req.params.id);
+        res.status(200).json(user.reviews)
+        console.log("Get all reviews");
+    } catch (err) {
+        res.status(500).json(err);
+    }
+})
 
-
-//Update reviews
 //Update calender
 //Update location
 

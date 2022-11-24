@@ -33,7 +33,7 @@ export default function SingleBusiness() {
 
   useEffect(() => {
     //get all images of the business from mongodb
-    axios.get('http://localhost:5015/business/gallery').
+    axios.get(`http://localhost:5015/api/gallery/${name}`).
       then((res) => setData(res.data)).
       catch((err) => console.log(err));
   }, []);
@@ -46,10 +46,10 @@ export default function SingleBusiness() {
 
     let formData = new FormData();
     formData.append('image', imageName)
-    formData.append('name', "image1");
+    formData.append('name', name);
 
     //send request to server for upload new image
-    await axios.post('http://localhost:5015/business/gallery', formData).
+    await axios.post('http://localhost:5015/api/gallery', formData).
       then((res) => console.log(res.data)).
       catch((err) => console.log(err));
       window.location.reload(false);
@@ -118,7 +118,7 @@ export default function SingleBusiness() {
                               </Col>
                             </Tab.Pane>
                             <Tab.Pane eventKey="third">
-                              <Reviews />
+                              <Reviews id={business._id}/>
                             </Tab.Pane>
                             <Tab.Pane eventKey="four">
                               <Googlemap />

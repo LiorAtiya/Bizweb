@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FaStar } from "react-icons/fa"
 import Toast from 'react-bootstrap/Toast';
+import axios from 'axios';
 
 const colors = {
     orange: "#FFBA5A",
@@ -29,7 +30,7 @@ const styles = {
     }
 }
 
-export default function Reviews() {
+export default function Reviews({ id }) {
 
     const stars = Array(5).fill(0);
     const [reviewList, setReviewList] = useState([])
@@ -37,6 +38,13 @@ export default function Reviews() {
     const [name, setName] = useState('');
     const [review, setReview] = useState('');
     const [hoverValue, setHoverValue] = useState(undefined);
+
+    useEffect(() => {
+        //get all images of the business from mongodb
+        axios.get(`http://localhost:5015/api/business/${id}/reviews`).
+          then((res) => setReviewList(res.data)).
+          catch((err) => console.log(err));
+      }, []);
 
     const handleClick = value => {
         setCurrentValue(value)
@@ -59,9 +67,22 @@ export default function Reviews() {
         setReview(event.target.value);
     };
 
-    const createNewReview = () => {
-        setReviewList(oldList => [...oldList, [name, review, currentValue]])
-        console.log(reviewList)
+    // const createNewReview = () => {
+    //     setReviewList(oldList => [...oldList, [name, review, currentValue]])
+    //     console.log(reviewList)
+    // }
+
+    const addReview = async () => {
+        const newReview = {
+            details: {
+                name: name,
+                review: review,
+                stars: currentValue
+            },
+            userID: id
+        } 
+        await axios.put(`http://localhost:5015/api/business/${id}/reviews`, newReview);
+        window.location.reload(false);
     }
 
     return (
@@ -99,7 +120,7 @@ export default function Reviews() {
                 value={review}
                 onChange={handleMessageChange}
             />
-            <button style={styles.button} onClick={createNewReview}>Submit</button>
+            <button style={styles.button} onClick={addReview}>Submit</button>
             <div>
                 <br></br>
                 {
@@ -109,14 +130,14 @@ export default function Reviews() {
                                 <Toast>
                                     <Toast.Header>
                                         {/* <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" /> */}
-                                        <strong className="me-auto">{item[0]}</strong>
-                                        <small>{item[2]}</small>
+                                        <strong className="me-auto">{item.name}</strong>
+                                        <small>{item.stars}</small>
                                         <FaStar style={{
                                             marginLeft: '5px',
                                             cursor: 'pointer'
                                         }} />
                                     </Toast.Header>
-                                    <Toast.Body>{item[1]}</Toast.Body>
+                                    <Toast.Body>{item.review}</Toast.Body>
 
                                 </Toast>
                                 <br></br>

@@ -7,7 +7,12 @@ import defaultImg from "../../images/room-1.jpeg"
 
 //Card of business from some category
 export default function Business({ business }) {
-  const { category, name, description, location } = business;
+  const { 
+    // category, 
+    name, 
+    // description, 
+    // location 
+  } = business;
 
   return (
     <article className='room'>

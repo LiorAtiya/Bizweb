@@ -33,7 +33,7 @@ app.use(bodyParser.json())
 app.use('/api/users', userRoute);
 app.use('/api/auth', authRoute);
 app.use('/api/business', businessRoute);
-app.use('/', imageRoute);
+app.use('/api/gallery', imageRoute);
 
 app.listen(5015, () => {
     console.log("Server Started");
