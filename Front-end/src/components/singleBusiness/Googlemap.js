@@ -1,31 +1,45 @@
 import React from "react";
 import GoogleMapReact from 'google-map-react';
+import Card from 'react-bootstrap/Card';
+
 
 const AnyReactComponent = ({ text }) => <div>{text}</div>;
 
-export default function Googlemap(){
+export default function Googlemap({ location }) {
   const defaultProps = {
     center: {
-      lat: 10.99835602,
-      lng: 77.01502627
+      lat: 32.085300,
+      lng: 34.781769
     },
-    zoom: 11
+    zoom: 13
   };
 
+  const styles = {
+    container: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+    },
+  }
+
   return (
-    // Important! Always set the container height explicitly
-    <div style={{ height: '50vh', width: '50%' }}>
-      <GoogleMapReact
-        bootstrapURLKeys={{ key: "" }}
-        defaultCenter={defaultProps.center}
-        defaultZoom={defaultProps.zoom}
-      >
-        <AnyReactComponent
-          lat={59.955413}
-          lng={30.337844}
-          text="My Marker"
-        />
-      </GoogleMapReact>
-    </div>
+    <>
+      <div style={styles.container}>
+        <div style={{ height: '50vh', width: '50%' }}>
+          <Card body>{location}</Card>;
+          <GoogleMapReact
+            bootstrapURLKeys={{ key: "" }}
+            defaultCenter={defaultProps.center}
+            defaultZoom={defaultProps.zoom}
+          >
+            <AnyReactComponent
+              lat={32.085300}
+              lng={34.781769}
+              text="My Marker"
+            />
+          </GoogleMapReact>
+        </div>
+      </div>
+    </>
   );
 }

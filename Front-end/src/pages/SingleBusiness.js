@@ -75,6 +75,7 @@ export default function SingleBusiness() {
                   <TrackVisibility>
                     {({ isVisible }) =>
                       <div className={isVisible ? "animate__animated animate__fadeIn" : ""}>
+                        <h1>Description</h1>
                         <p>{business.description}</p>
                         <Tab.Container id="projects-tabs" defaultActiveKey="first">
                           <Nav variant="pills" className="nav-pills mb-5 justify-content-center align-items-center" id="pills-tab">
@@ -113,15 +114,15 @@ export default function SingleBusiness() {
                               </Row>
                             </Tab.Pane>
                             <Tab.Pane eventKey="second">
-                              <Col size={12} sm={6} md={7}>
-                                <Calender />
-                              </Col>
+                              {/* <Col size={12} sm={6} md={7}> */}
+                                <Calender id={business._id}/>
+                              {/* </Col> */}
                             </Tab.Pane>
                             <Tab.Pane eventKey="third">
                               <Reviews id={business._id}/>
                             </Tab.Pane>
                             <Tab.Pane eventKey="four">
-                              <Googlemap />
+                              <Googlemap location={business.location}/>
                             </Tab.Pane>
                           </Tab.Content>
                         </Tab.Container>
