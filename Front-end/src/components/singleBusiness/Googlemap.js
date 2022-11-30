@@ -26,7 +26,8 @@ export default function Googlemap({ location }) {
     <>
       <div style={styles.container}>
         <div style={{ height: '50vh', width: '50%' }}>
-          <Card body>{location}</Card>;
+          <Card body>Address: {location}<br/>
+                      Phone: </Card>;
           <GoogleMapReact
             bootstrapURLKeys={{ key: "" }}
             defaultCenter={defaultProps.center}

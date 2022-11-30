@@ -35,6 +35,18 @@ const Calendar = ({ id }) => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    const [show2, setShow2] = useState(false);
+    const handleClose2 = () => setShow2(false);
+    const handleShow2 = () => setShow2(true);
+    const getUserData = JSON.parse(localStorage.getItem('token'));
+
+    const isAdmin = () => {
+        if (getUserData) {
+            return getUserData.business.includes(id);
+        }
+        return false;
+    }
+
     const hours = [
         { value: "08:00", isChecked: false },
         { value: "09:00", isChecked: false },
@@ -74,7 +86,7 @@ const Calendar = ({ id }) => {
             phone: phone.current.value,
             comments: comments.current.value,
         }
-        await (await axios.post('http://localhost:5015/api/calender/create-event', appointment))
+        await axios.post('http://localhost:5015/api/calender/create-event', appointment);
         console.log("Added new event to calender");
 
         window.location.reload(false);
@@ -169,9 +181,21 @@ const Calendar = ({ id }) => {
                 <Card style={{ width: '30rem', marginLeft: "30px", display: 'flex' }}>
                     <Card.Body>
                         <div className="d-grid">
-                            <Button variant="btn btn-warning" onClick={handleShow}>
-                                Admin Permissions
-                            </Button>
+                            {
+                                isAdmin() ?
+                                    <>
+                                        <Button variant="btn btn-warning" onClick={handleShow}>
+                                            Add available hours
+                                        </Button>
+                                        <br></br>
+                                        <Button variant="btn btn-warning" onClick={handleShow2}>
+                                            List of appointments
+                                        </Button>
+                                        <hr></hr>
+                                    </>
+                                    :
+                                    null
+                            }
 
                             <Modal
                                 show={show}
@@ -206,8 +230,26 @@ const Calendar = ({ id }) => {
                                 </Modal.Footer>
                             </Modal>
 
+                            <Modal
+                                show={show2}
+                                onHide={handleClose2}
+                                backdrop="static"
+                                keyboard={false}
+                            >
+                                <Modal.Header closeButton>
+                                    <h5>List of appointments</h5>
+                                </Modal.Header>
+                                <Modal.Body>
+                                  
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <Button variant="secondary" onClick={handleClose2}>
+                                        Close
+                                    </Button>
+                                </Modal.Footer>
+                            </Modal>
+
                         </div>
-                        <hr></hr>
                         <h1>Make appointment</h1>
                         <Card.Subtitle className="mb-2 text-muted">{value.getDate() + "/" + (value.getMonth() + 1) + "/" + value.getFullYear()}</Card.Subtitle>
                         <Card.Text>

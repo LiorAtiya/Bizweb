@@ -1,6 +1,5 @@
 import React, { useEffect, useContext, useState } from 'react'
 import defaultBcg from "../images/room-1.jpeg"
-// import { BusinessContext } from "../context"
 import { Link } from 'react-router-dom'
 import Banner from '../components/Banner'
 import StyledHero from '../components/StyledHero'
@@ -15,7 +14,6 @@ import Reviews from '../components/singleBusiness/Reviews'
 import Googlemap from '../components/singleBusiness/Googlemap'
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min'
 import { BusinessContext } from '../context/BusinessContext'
-import axios from 'axios'
 
 export default function SingleBusiness() {
 
@@ -25,38 +23,6 @@ export default function SingleBusiness() {
   //get data of business
   const { getBusiness } = context;
   const business = getBusiness(name);
-
-  //data of all images
-  const [data, setData] = useState([]);
-
-  const [imageName, setImageName] = useState("");
-
-  useEffect(() => {
-    const getResult = async () => {
-      //get all images of the business from mongodb
-      await axios.get(`http://localhost:5015/api/gallery/${name}`).
-        then((res) => setData(res.data)).
-        catch((err) => console.log(err));
-    };
-    getResult();
-  }, []);
-
-  const handleImage = (e) => {
-    setImageName(e.target.files[0]);
-  }
-
-  const uploadImage = async () => {
-
-    let formData = new FormData();
-    formData.append('image', imageName)
-    formData.append('name', name);
-
-    //send request to server for upload new image
-    await axios.post('http://localhost:5015/api/gallery', formData).
-      then((res) => console.log(res.data)).
-      catch((err) => console.log(err));
-    window.location.reload(false);
-  }
 
   return (
     <>
@@ -97,29 +63,10 @@ export default function SingleBusiness() {
                           </Nav>
                           <Tab.Content id="slideInUp" className={isVisible ? "animate__animated animate__slideInUp" : ""}>
                             <Tab.Pane eventKey="first">
-                              <div>
-                                <label htmlFor='file'>Choose image</label>
-                                <br></br>
-                                <input type="file" filename="image"
-                                  onChange={handleImage} />
-                                <br></br>
-                                <button onClick={uploadImage}>Upload</button>
-                              </div>
-                              <Row>
-                                {
-                                  data.reverse().map((singleData, i) => {
-                                    const base64String = btoa(
-                                      String.fromCharCode(...new Uint8Array(singleData.img.data.data))
-                                    );
-                                    return <GalleryCard src={`data:image/png;base64,${base64String}`} key={i} />
-                                  })
-                                }
-                              </Row>
+                              <GalleryCard id={business._id} name={name}/>
                             </Tab.Pane>
                             <Tab.Pane eventKey="second">
-                              {/* <Col size={12} sm={6} md={7}> */}
                               <Calender id={business._id} />
-                              {/* </Col> */}
                             </Tab.Pane>
                             <Tab.Pane eventKey="third">
                               <Reviews id={business._id} />
