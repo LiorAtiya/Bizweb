@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Business = require('../Models/businessDetails');
+const Calender = require('../Models/calender');
 
 //Add business
 router.post('/add', async (req, res) => {
@@ -23,6 +24,15 @@ router.post('/add', async (req, res) => {
             calender,
             location,
         });
+
+        //create new calender for business
+        const event = await Calender.create({
+            // _id: businessID,
+            businessID: business._id,
+            dates: [],
+            availableHours: [],
+        });
+
         res.send(business);
     } catch (error) {
         res.send({ status: "error" })

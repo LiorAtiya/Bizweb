@@ -32,10 +32,13 @@ export default function SingleBusiness() {
   const [imageName, setImageName] = useState("");
 
   useEffect(() => {
-    //get all images of the business from mongodb
-    axios.get(`http://localhost:5015/api/gallery/${name}`).
-      then((res) => setData(res.data)).
-      catch((err) => console.log(err));
+    const getResult = async () => {
+      //get all images of the business from mongodb
+      await axios.get(`http://localhost:5015/api/gallery/${name}`).
+        then((res) => setData(res.data)).
+        catch((err) => console.log(err));
+    };
+    getResult();
   }, []);
 
   const handleImage = (e) => {
@@ -52,7 +55,7 @@ export default function SingleBusiness() {
     await axios.post('http://localhost:5015/api/gallery', formData).
       then((res) => console.log(res.data)).
       catch((err) => console.log(err));
-      window.location.reload(false);
+    window.location.reload(false);
   }
 
   return (
@@ -108,21 +111,21 @@ export default function SingleBusiness() {
                                     const base64String = btoa(
                                       String.fromCharCode(...new Uint8Array(singleData.img.data.data))
                                     );
-                                    return <GalleryCard src={`data:image/png;base64,${base64String}`} key={i}/>
+                                    return <GalleryCard src={`data:image/png;base64,${base64String}`} key={i} />
                                   })
                                 }
                               </Row>
                             </Tab.Pane>
                             <Tab.Pane eventKey="second">
                               {/* <Col size={12} sm={6} md={7}> */}
-                                <Calender id={business._id}/>
+                              <Calender id={business._id} />
                               {/* </Col> */}
                             </Tab.Pane>
                             <Tab.Pane eventKey="third">
-                              <Reviews id={business._id}/>
+                              <Reviews id={business._id} />
                             </Tab.Pane>
                             <Tab.Pane eventKey="four">
-                              <Googlemap location={business.location}/>
+                              <Googlemap location={business.location} />
                             </Tab.Pane>
                           </Tab.Content>
                         </Tab.Container>

@@ -40,11 +40,14 @@ export default function Reviews({ id }) {
     const [hoverValue, setHoverValue] = useState(undefined);
 
     useEffect(() => {
-        //get all images of the business from mongodb
-        axios.get(`http://localhost:5015/api/business/${id}/reviews`).
-          then((res) => setReviewList(res.data)).
-          catch((err) => console.log(err));
-      }, []);
+        const getResult = async () => {
+            //get all images of the business from mongodb
+            await axios.get(`http://localhost:5015/api/business/${id}/reviews`).
+                then((res) => setReviewList(res.data)).
+                catch((err) => console.log(err));
+        };
+        getResult();
+    }, []);
 
     const handleClick = value => {
         setCurrentValue(value)
@@ -67,11 +70,6 @@ export default function Reviews({ id }) {
         setReview(event.target.value);
     };
 
-    // const createNewReview = () => {
-    //     setReviewList(oldList => [...oldList, [name, review, currentValue]])
-    //     console.log(reviewList)
-    // }
-
     const addReview = async () => {
         const newReview = {
             details: {
@@ -80,7 +78,7 @@ export default function Reviews({ id }) {
                 stars: currentValue
             },
             userID: id
-        } 
+        }
         await axios.put(`http://localhost:5015/api/business/${id}/reviews`, newReview);
         window.location.reload(false);
     }
@@ -132,10 +130,13 @@ export default function Reviews({ id }) {
                                         {/* <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" /> */}
                                         <strong className="me-auto">{item.name}</strong>
                                         <small>{item.stars}</small>
-                                        <FaStar style={{
-                                            marginLeft: '5px',
-                                            cursor: 'pointer'
-                                        }} />
+                                        <FaStar
+                                            key={i}
+                                            style={{
+                                                marginLeft: '5px',
+                                                cursor: 'pointer'
+                                            }}
+                                        />
                                     </Toast.Header>
                                     <Toast.Body>{item.review}</Toast.Body>
 
