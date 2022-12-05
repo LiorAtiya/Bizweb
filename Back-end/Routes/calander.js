@@ -31,6 +31,19 @@ router.post('/create-event', async (req, res) => {
 }
 )
 
+//delete event from calender
+router.delete('/delete-event', async (req, res) => {
+    
+    console.log("time: "+req.body.time+" | date: "+req.body.date);
+    //delete event
+    await Calender.findOneAndUpdate({ businessID: req.body.businessID }, { $pull: { "dates": {date:req.body.date, time: req.body.time} } });
+
+    //Add to availableHours
+    await Calender.findOneAndUpdate({ businessID: req.body.businessID }, { $push: { "availableHours": {date:req.body.date, time: req.body.time }}})
+    
+    res.send("Delete event & add to availableHours");
+})
+
 //Get all the events of business
 router.post('/get-events', async (req, res) => {
 

@@ -30,11 +30,12 @@ const Calendar = ({ id }) => {
     const phone = useRef("");
     const comments = useRef("");
 
-    //Admin Permissions
+    //============ Admin Permissions ============
+    //for add hours
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-
+    //for see appoiments
     const [show2, setShow2] = useState(false);
     const handleClose2 = () => setShow2(false);
     const handleShow2 = () => setShow2(true);
@@ -45,6 +46,10 @@ const Calendar = ({ id }) => {
             return getUserData.business.includes(id);
         }
         return false;
+    }
+
+    const dateAppoimentsFiltered = () => {
+        return events.dates.filter(event => event.date == value.getDate() + "/" + (value.getMonth() + 1) + "/" + value.getFullYear());
     }
 
     const hours = [
@@ -118,6 +123,19 @@ const Calendar = ({ id }) => {
             await axios.post('http://localhost:5015/api/calender/create-event', appointment)
         })
         alert("Added more hours to calender")
+        window.location.reload(false);
+    }
+
+    const deleteEvent = async (t, date) => {
+        console.log("time: "+t+" | date: "+date);
+        const appointment = {
+            businessID: id,
+            date: date,
+            time: t
+        }
+
+        await axios.delete('http://localhost:5015/api/calender/delete-event', 
+        { data: { businessID: id ,date: date, time: t } });
         window.location.reload(false);
     }
 
@@ -229,7 +247,6 @@ const Calendar = ({ id }) => {
                                     <Button variant="btn btn-success" onClick={addHours}>Confirm</Button>
                                 </Modal.Footer>
                             </Modal>
-
                             <Modal
                                 show={show2}
                                 onHide={handleClose2}
@@ -240,7 +257,31 @@ const Calendar = ({ id }) => {
                                     <h5>List of appointments</h5>
                                 </Modal.Header>
                                 <Modal.Body>
-                                  
+                                    {
+                                        dateAppoimentsFiltered().map(item => {
+                                            return (
+                                                <>
+                                                <Card>
+                                                    <Card.Header><b>Time:</b> {item.time}</Card.Header>
+                                                    <Card.Body>
+                                                        {/* <Card.Title>Special title treatment</Card.Title> */}
+                                                        <Card.Text>
+                                                            <b>Name: </b>{item.name}
+                                                            <br />
+                                                            <b>Phone: </b>{item.phone}
+                                                            <br />
+                                                            <b>Comments: </b>{item.comments}
+                                                            <br />
+                                                        </Card.Text>
+                                                        <Button variant="btn btn-danger" 
+                                                        onClick={() => deleteEvent(item.time, value.getDate() + "/" + (value.getMonth() + 1) + "/" + value.getFullYear())}>Delete</Button>
+                                                    </Card.Body>
+                                                </Card>
+                                                <br />
+                                                </>
+                                            )
+                                        })
+                                    }
                                 </Modal.Body>
                                 <Modal.Footer>
                                     <Button variant="secondary" onClick={handleClose2}>
