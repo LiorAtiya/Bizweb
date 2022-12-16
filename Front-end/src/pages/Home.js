@@ -11,7 +11,7 @@ import CategoryBusiness from '../components/home/CategoryBusiness'
 class Home extends Component {
     constructor() {
         super()
-        this.state = { // תיאור של מה שבונים
+        this.state = {
             category: [],
             searchfield: ''
         }
@@ -39,12 +39,12 @@ class Home extends Component {
             return ( 
                 <>
                 <Hero>
-                    <div className='tc'> 
+                    {/* <div className='tc'>  */}
                     <Banner title="Facework" subtitle="Social network for business">
                         {/* <Link to='/register' className='btn-primary'>Register</Link> */}
                         <SearchBox searchChange={this.onSearchChange} />
                     </Banner>
-                    </div>
+                    {/* </div> */}
                 </Hero>
                 <CategoryBusiness categories={filteredCategories}/>
                 <Services/>

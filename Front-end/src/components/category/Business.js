@@ -10,6 +10,7 @@ export default function Business({ business }) {
   const { 
     // category, 
     name, 
+    backgroundPicture
     // description, 
     // location 
   } = business;
@@ -17,14 +18,14 @@ export default function Business({ business }) {
   return (
     <article className='room'>
       <div className='img-container'>
-        <img src={defaultImg} alt="single room" />
+        <img src={backgroundPicture || defaultImg} alt="single room" />
         {/* <div className='price-top'>
           <h6>${price}</h6>
           <p>per night</p>
         </div> */}
         <Link to={`/business/${name}`}
           className="btn-primary room-link">
-          Features
+          Enter
         </Link>
         <p className='room-info'>{name}</p>
       </div>

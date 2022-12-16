@@ -704,3 +704,21 @@
   background-color: #f4f4f4;
   margin-bottom: 1rem;
 }
+
+/* --------------------------------- */
+
+/* ------------- background picture --------------- */
+
+.images-preview {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin-top: 50px;
+  margin: auto;
+  /* margin: 20px; */
+}
+
+.images-preview img {
+  width: 200px;
+  height: 200px;
+}

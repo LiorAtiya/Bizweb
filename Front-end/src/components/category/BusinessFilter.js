@@ -10,9 +10,10 @@ const getUnique = (item, value) => {
 
 export default function BusinessFilter({ business }) {
   const context = useContext(BusinessContext)
+
   const {
     handleChange,
-    type,
+    city,
     // capacity,
     // price,
     // minPrice,
@@ -24,7 +25,7 @@ export default function BusinessFilter({ business }) {
   } = context;
 
   //get uniqe types
-  let types = getUnique(business, "location")
+  let types = getUnique(business, "city")
 
   //add all
   types = ['all', ...types];
@@ -44,8 +45,8 @@ export default function BusinessFilter({ business }) {
       <form className='filter-form'>
         {/* slect type */}
         <div className='form-group'>
-          <label htmlFor='type'>Area</label>
-          <select name='type' id='type' value={type} className='form-control' onChange={handleChange}>
+          <label htmlFor='type'>Filter by city</label>
+          <select name='city' id='city' value={city} className='form-control' onChange={handleChange}>
             {types}
           </select>
         </div>

@@ -5,7 +5,7 @@ import Card from 'react-bootstrap/Card';
 
 const AnyReactComponent = ({ text }) => <div>{text}</div>;
 
-export default function Googlemap({ location }) {
+export default function Googlemap({ business }) {
   const defaultProps = {
     center: {
       lat: 32.085300,
@@ -16,9 +16,9 @@ export default function Googlemap({ location }) {
 
   const styles = {
     container: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
     },
   }
 
@@ -26,8 +26,12 @@ export default function Googlemap({ location }) {
     <>
       <div style={styles.container}>
         <div style={{ height: '50vh', width: '50%' }}>
-          <Card body>Address: {location}<br/>
-                      Phone: </Card>;
+          <Card body>
+            City: {business.city}<br/>
+            Address: {business.address}<br />
+            Phone: {business.phone}
+
+          </Card>;
           <GoogleMapReact
             bootstrapURLKeys={{ key: "" }}
             defaultCenter={defaultProps.center}

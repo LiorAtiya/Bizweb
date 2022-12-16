@@ -23,10 +23,23 @@ const BusinessDetailsSchema = new mongoose.Schema({
         require: true,
         default: ""
     },
-    location: {
+    city: {
         type: String,
         require: true,
         default: ""
+    },
+    address: {
+        type: String,
+        require: true,
+        default: ""
+    },
+    phone: {
+        type: Number,
+        require: true,
+    },
+    backgroundPicture: {
+        type: String,
+        require: true,
     },
 },
     { timestamps: true }

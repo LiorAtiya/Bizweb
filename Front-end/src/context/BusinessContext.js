@@ -12,7 +12,7 @@ export default class BusinessProvider extends Component {
         sortedBusiness: [],
         featuredBusiness: [],
         loading: true,
-        location: "all",
+        city: "all",
         // capacity: 1,
         // price: 0,
         // minPrice: 0,
@@ -70,8 +70,9 @@ export default class BusinessProvider extends Component {
 
     handleChange = event => {
         const target = event.target;
-        const value = target.location === 'checkbox' ?
+        const value = target.city === 'checkbox' ?
             target.checked : target.value;
+
         const name = event.target.name;
         this.setState(
             {
@@ -84,7 +85,7 @@ export default class BusinessProvider extends Component {
     filterBusiness = () => {
         let {
             business,
-            location,
+            city,
             // capacity,
             // price,
             // minPrice,
@@ -98,9 +99,9 @@ export default class BusinessProvider extends Component {
         //all the business
         let tempBusiness = [...business];
 
-        //filter by location
-        if (location !== 'all') {
-            tempBusiness = tempBusiness.filter(busi => busi.location === location);
+        //filter by city
+        if (city !== 'all') {
+            tempBusiness = tempBusiness.filter(busi => busi.city === city);
         }       
 
         this.setState({

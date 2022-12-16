@@ -5,7 +5,7 @@ const Calender = require('../Models/calender');
 //Add business
 router.post('/add', async (req, res) => {
     const { category, name, description,
-        gallery, reviews, calender, location } = req.body;
+        city, address, phone, backgroundPicture } = req.body;
 
     try {
         //checks if the user already exist in database
@@ -19,10 +19,12 @@ router.post('/add', async (req, res) => {
             category,
             name,
             description,
-            gallery,
-            reviews,
-            calender,
-            location,
+            gallery: [],
+            reviews: [],
+            city,
+            address,
+            phone,
+            backgroundPicture
         });
 
         //create new calender for business
@@ -32,7 +34,7 @@ router.post('/add', async (req, res) => {
             dates: [],
             availableHours: [],
         });
-
+        console.log(business);
         res.send(business);
     } catch (error) {
         res.send({ status: "error" })
@@ -100,6 +102,29 @@ router.get("/:id/reviews", async (req, res) => {
         const user = await Business.findById(req.params.id);
         res.status(200).json(user.reviews)
         console.log("Get all reviews");
+    } catch (err) {
+        res.status(500).json(err);
+    }
+})
+
+//Add new picture to gallery
+router.put("/:id/gallery", async (req, res) => {
+    try {
+        //Add new picture
+        await Business.findByIdAndUpdate({ _id: req.params.id }, { $push: { gallery: req.body } })
+        console.log("Added new picture");
+        res.send("OK - 200 ");
+    } catch (err) {
+        res.status(500).json(err);
+    }
+})
+
+//Get gallery of business
+router.get("/:id/gallery", async (req, res) => {
+    try {
+        const user = await Business.findById(req.params.id);
+        res.status(200).json(user.gallery)
+        console.log("Get gallery");
     } catch (err) {
         res.status(500).json(err);
     }

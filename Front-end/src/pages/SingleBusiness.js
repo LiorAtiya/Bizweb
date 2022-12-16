@@ -30,7 +30,7 @@ export default function SingleBusiness() {
         <h1>Loading...</h1>
         :
         <>
-          <StyledHero img={defaultBcg}>
+          <StyledHero img={business.backgroundPicture}>
             <Banner title={`${business.name}`}>
               <Link to='/' className='btn-primary'>
                 Back to home
@@ -72,7 +72,7 @@ export default function SingleBusiness() {
                               <Reviews id={business._id} />
                             </Tab.Pane>
                             <Tab.Pane eventKey="four">
-                              <Googlemap location={business.location} />
+                              <Googlemap business={business} />
                             </Tab.Pane>
                           </Tab.Content>
                         </Tab.Container>

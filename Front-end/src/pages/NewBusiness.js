@@ -1,14 +1,44 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import Hero from '../components/Hero';
 import axios from "axios";
 import { useHistory } from "react-router-dom";
+import cities from '../database/cities'
 
 export default function NewBusiness() {
     const category = useRef("");
     const name = useRef();
     const description = useRef();
-    const location = useRef();
+    const city = useRef();
+    const address = useRef();
+    const phone = useRef();
     const history = useHistory();
+
+    const [backgroundPicture, setBackgroundPicture] = useState("");
+    const [imageToRemove, setImageToRemove] = useState([]);
+
+    const citiesMap = cities.map((item, index) => {
+        return <option value={item.name} key={index}>{item.name}</option>
+    })
+
+    const handleRemoveImg = (imgObj) => {
+
+    }
+
+    const handleOpenWidget = () => {
+        var myWidget = window.cloudinary.createUploadWidget({
+            cloudName: 'dk5mqzgcv',
+            uploadPreset: 'xw93prxe'
+        }, (error, result) => {
+            if (!error && result && result.event === "success") {
+                console.log('Done! Here is the image info: ', result.info);
+                setBackgroundPicture(result.info.url);
+            }
+        }
+        )
+
+        //open widget
+        myWidget.open();
+    }
 
     const handleClick = async (e) => {
         e.preventDefault();
@@ -17,7 +47,10 @@ export default function NewBusiness() {
             category: category.current.value,
             name: name.current.value,
             description: description.current.value,
-            location: location.current.value,
+            city: city.current.value,
+            address: address.current.value,
+            phone: phone.current.value,
+            backgroundPicture: backgroundPicture,
         }
         try {
             //send request to server to add new business
@@ -31,7 +64,7 @@ export default function NewBusiness() {
                             userID: getUserData._id,
                             business: businessID
                         }
-                        axios.put(`http://localhost:5015/api/users/${getUserData._id}/business`,business);
+                        axios.put(`http://localhost:5015/api/users/${getUserData._id}/business`, business);
 
                         console.log("Added new business to list of user");
                         history.push('/');
@@ -84,14 +117,49 @@ export default function NewBusiness() {
                     </div>
 
                     <div className="mb-3">
-                        <label>Location</label>
+                        <label>
+                            City:<br></br>
+                            <select className="form-control" value={category.current.value} ref={city}>
+                                {citiesMap}
+                            </select>
+                        </label>
+                    </div>
+
+
+                    <div className="mb-3">
+                        <label>Address</label>
                         <input
                             type="text"
                             className="form-control"
+                            placeholder="Enter address of business"
+                            required
+                            ref={address}
+                        />
+                    </div>
+
+                    <div className="mb-3">
+                        <label>Phone number</label>
+                        <input
+                            type="number"
+                            className="form-control"
                             placeholder="Enter location"
                             required
-                            ref={location}
+                            ref={phone}
                         />
+                    </div>
+
+                    <div className="mb-3">
+                        <div id='upload-widget' className='cloudinary-button' onClick={() => handleOpenWidget()}>
+                            Choose background image
+                        </div>
+                        {
+                            backgroundPicture !== "" ?
+                                <div className='images-preview'>
+                                    <img src={backgroundPicture} />
+                                </div>
+                            :
+                            null
+                        }
                     </div>
 
                     <div className="d-grid">
