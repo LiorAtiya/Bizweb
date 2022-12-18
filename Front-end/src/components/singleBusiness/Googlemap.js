@@ -1,18 +1,12 @@
-import React from "react";
-import GoogleMapReact from 'google-map-react';
+import React, { useState, useEffect, useRef } from 'react'
 import Card from 'react-bootstrap/Card';
-
-
-const AnyReactComponent = ({ text }) => <div>{text}</div>;
+import axios from 'axios';
+import BingMapsReact from "bingmaps-react";
+import waze from '../../images/waze.svg'
+import googlemaps from '../../images/googlemaps.png'
+import moovit from '../../images/moovit.webp'
 
 export default function Googlemap({ business }) {
-  const defaultProps = {
-    center: {
-      lat: 32.085300,
-      lng: 34.781769
-    },
-    zoom: 13
-  };
 
   const styles = {
     container: {
@@ -22,27 +16,56 @@ export default function Googlemap({ business }) {
     },
   }
 
+  const pushPin = {
+    center: {
+      latitude: business.coordination.location.y,
+      longitude: business.coordination.location.x,
+    },
+    options: {
+      title: business.address + ", " + business.city,
+    },
+  }
+
+  const pushPins = [pushPin];
+
   return (
     <>
       <div style={styles.container}>
         <div style={{ height: '50vh', width: '50%' }}>
-          <Card body>
-            City: {business.city}<br/>
-            Address: {business.address}<br />
-            Phone: {business.phone}
-
-          </Card>;
-          <GoogleMapReact
-            bootstrapURLKeys={{ key: "" }}
-            defaultCenter={defaultProps.center}
-            defaultZoom={defaultProps.zoom}
-          >
-            <AnyReactComponent
-              lat={32.085300}
-              lng={34.781769}
-              text="My Marker"
+          <Card style={{ textAlign: "center" }} body >
+            <b>City:</b> {business.city}<br />
+            <b>Address:</b> {business.address}<br />
+            <b>Phone:</b> {'0' + business.phone}<br />
+            <img src={waze} alt="Logo" style={{ height: '60px', width: '60px', marginRight: "30px" }}
+              onClick={() => {
+                window.open(`https://waze.com/ul?ll=${business.coordination.location.y},${business.coordination.location.x}&navigate=yes`,'_blank');
+              }} />
+            <img src={googlemaps} alt="Logo" style={{ height: '60px', width: '60px', marginRight: "20px" }}
+              onClick={() => {
+                window.open(`https://maps.google.com?q=${business.coordination.location.y},${business.coordination.location.x}`,'_blank');
+              }} />
+            <img src={moovit} alt="Logo" style={{ height: '80px', width: '80px' }} 
+            onClick={() => {
+              window.open(`https://moovitapp.com/israel-1/poi/${business.city} ${business.address}/t/en?tll=${business.coordination.location.y}_${business.coordination.location.x}`,'_blank');
+            }} />
+            <br />
+            <BingMapsReact
+              bingMapsKey="Am7ABZsl1hVs093AjZV82C3wxd-NCQ-KtBLpdtv4uB1UBvqIx7vcgN7Dw1A9RpQt"
+              height="300px"
+              mapOptions={{
+                navigationBarMode: "square",
+              }}
+              width="600px"
+              pushPins={pushPins}
+              viewOptions={{
+                center: {
+                  latitude: business.coordination.location.y,
+                  longitude: business.coordination.location.x
+                },
+                // mapTypeId: "grayscale",
+              }}
             />
-          </GoogleMapReact>
+          </Card>
         </div>
       </div>
     </>

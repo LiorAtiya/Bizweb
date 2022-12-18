@@ -34,7 +34,7 @@ router.post('/create-event', async (req, res) => {
 //delete event from calender
 router.delete('/delete-event', async (req, res) => {
     
-    console.log("time: "+req.body.time+" | date: "+req.body.date);
+    // console.log("time: "+req.body.time+" | date: "+req.body.date);
     //delete event
     await Calender.findOneAndUpdate({ businessID: req.body.businessID }, { $pull: { "dates": {date:req.body.date, time: req.body.time} } });
 

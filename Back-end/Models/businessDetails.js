@@ -33,6 +33,10 @@ const BusinessDetailsSchema = new mongoose.Schema({
         require: true,
         default: ""
     },
+    coordination: {
+        type: Object,
+        require: true,
+    },
     phone: {
         type: Number,
         require: true,

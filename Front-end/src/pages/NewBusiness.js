@@ -85,7 +85,7 @@ export default function NewBusiness() {
                     <div className="mb-3">
                         <label>
                             Category of your business:<br></br>
-                            <select className="form-control" value={category.current.value} ref={category}>
+                            <select className="form-control" ref={category}>
                                 <option value="Barbershop">Barbershop</option>
                                 <option value="Nail Polish">Nail Polish</option>
                                 <option value="Restaurants">Restaurants</option>
@@ -119,7 +119,7 @@ export default function NewBusiness() {
                     <div className="mb-3">
                         <label>
                             City:<br></br>
-                            <select className="form-control" value={category.current.value} ref={city}>
+                            <select className="form-control" ref={city}>
                                 {citiesMap}
                             </select>
                         </label>

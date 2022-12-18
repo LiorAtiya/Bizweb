@@ -8,9 +8,9 @@ const bodyParser = require('body-parser')
 const userRoute = require('./Routes/users')
 const authRoute = require('./Routes/auth')
 const businessRoute = require('./Routes/business')
-const imageRoute = require('./Routes/images')
 const calenderRoute = require('./Routes/calander')
 
+// const imageRoute = require('./Routes/images')
 dotenv.config();
 
 const app = express();

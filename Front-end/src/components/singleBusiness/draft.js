@@ -77,12 +77,12 @@ export const GalleryCard = ({ id, name }) => {
   }
 
   const handleRemoveImage = async () => {
-    await axios.delete(`http://localhost:5015/api/business/${id}/gallery`,
-      { data: { id: removeImage } }).
-      then((res) => console.log(res.data)).
-      catch((err) => console.log(err));
+    // await axios.delete(`http://localhost:5015/api/business/${id}/reviews`,
+    //   { data: { id: removeImage } }).
+    //   then((res) => console.log(res.data)).
+    //   catch((err) => console.log(err));
 
-    window.location.reload(false);
+    // window.location.reload(false);
   }
 
   return (
@@ -152,15 +152,9 @@ export const GalleryCard = ({ id, name }) => {
             // );
             return (
               <Col size={12} sm={6} md={4}>
-                <div className="proj-imgbx">
+                <div className="proj-imgbx" onClick={handleShow2(singleData.id)}>
                   {/* <img src={`data:image/png;base64,${base64String}`} alt={i} width="450" height="250" /> */}
                   <img src={singleData.url} alt={i} width="450" height="250" />
-                  {
-                    isAdmin() ?
-                      <button class="btn btn-danger btn-delete" onClick={() => handleShow2(singleData.id)}>Delete</button>
-                      :
-                      null
-                  }
                   {/* <div className="proj-txtx">
                     <h4>{"title"}</h4>
                     <span>{"description"}</span>

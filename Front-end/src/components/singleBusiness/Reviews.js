@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { FaStar } from "react-icons/fa"
 import Toast from 'react-bootstrap/Toast';
 import axios from 'axios';
@@ -35,9 +35,21 @@ export default function Reviews({ id }) {
     const stars = Array(5).fill(0);
     const [reviewList, setReviewList] = useState([])
     const [currentValue, setCurrentValue] = useState(0);
-    const [name, setName] = useState('');
-    const [review, setReview] = useState('');
+    // const [name, setName] = useState('');
+    // const [review, setReview] = useState('');
     const [hoverValue, setHoverValue] = useState(undefined);
+
+    const name = useRef();
+    const review = useRef();
+
+    const getUserData = JSON.parse(localStorage.getItem('token'));
+
+    const isAdmin = () => {
+        if (getUserData) {
+            return getUserData.business.includes(id);
+        }
+        return false;
+    }
 
     useEffect(() => {
         const getResult = async () => {
@@ -49,6 +61,7 @@ export default function Reviews({ id }) {
         getResult();
     }, []);
 
+    //----- Stars Rating --------
     const handleClick = value => {
         setCurrentValue(value)
     }
@@ -61,25 +74,23 @@ export default function Reviews({ id }) {
         setHoverValue(undefined)
     }
 
-    const handleNameChange = event => {
-        setName(event.target.value)
-    }
-
-    const handleMessageChange = event => {
-        // 👇️ access textarea value
-        setReview(event.target.value);
-    };
-
     const addReview = async () => {
         const newReview = {
             details: {
-                name: name,
-                review: review,
+                id: 'id' + (new Date()).getTime(),
+                name: name.current.value,
+                review: review.current.value,
                 stars: currentValue
             },
             userID: id
         }
         await axios.put(`http://localhost:5015/api/business/${id}/reviews`, newReview);
+        window.location.reload(false);
+    }
+
+    const removeReview = async (review_id) => {
+        await axios.delete(`http://localhost:5015/api/business/${id}/reviews`,
+            { data: { id: review_id } });
         window.location.reload(false);
     }
 
@@ -105,29 +116,38 @@ export default function Reviews({ id }) {
                 })}
             </div>
             <br></br>
-            <input
-                placeholder='Your name'
-                style={styles.button}
-                onChange={handleNameChange}
-            />
-            <textarea
-                placeholder="What's your feedback"
-                style={styles.textarea}
-                id="message"
-                name="message"
-                value={review}
-                onChange={handleMessageChange}
-            />
-            <button style={styles.button} onClick={addReview}>Submit</button>
+            <form onSubmit={addReview}>
+                <div>
+                    <input
+                        placeholder='Your name'
+                        style={styles.button}
+                        required
+                        ref={name}
+                    />
+                </div>
+                <div>
+                    <textarea
+                        placeholder="What's your feedback"
+                        style={styles.textarea}
+                        id="message"
+                        name="message"
+                        required
+                        ref={review}
+                    />
+                </div>
+                <button type="submit" style={styles.button}>Submit</button>
+            </form>
             <div>
                 <br></br>
                 {
                     reviewList.map((item, i) => {
                         return (
                             <>
-                                <Toast>
+                                {
+                                isAdmin() ?
+                                <Toast onClose={() => removeReview(item.id)}>
                                     <Toast.Header>
-                                        {/* <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" /> */}
+                                        {/* <img src="holder.js/20x20?text=/%20" className="rounded me-2" alt="" /> */}
                                         <strong className="me-auto">{item.name}</strong>
                                         <small>{item.stars}</small>
                                         <FaStar
@@ -139,8 +159,24 @@ export default function Reviews({ id }) {
                                         />
                                     </Toast.Header>
                                     <Toast.Body>{item.review}</Toast.Body>
-
                                 </Toast>
+                                :
+                                <Toast onClose={()=> alert('Only admin can remove review')}>
+                                    <Toast.Header>
+                                        {/* <img src="holder.js/20x20?text=/%20" className="rounded me-2" alt="" /> */}
+                                        <strong className="me-auto">{item.name}</strong>
+                                        <small>{item.stars}</small>
+                                        <FaStar
+                                            key={i}
+                                            style={{
+                                                marginLeft: '5px',
+                                                cursor: 'pointer'
+                                            }}
+                                        />
+                                    </Toast.Header>
+                                    <Toast.Body>{item.review}</Toast.Body>
+                                </Toast>
+                                }
                                 <br></br>
                             </>
                         )
