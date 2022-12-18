@@ -49,6 +49,4 @@ const BusinessDetailsSchema = new mongoose.Schema({
     { timestamps: true }
 );
 
-
-
 module.exports = mongoose.model("BusinessDetails", BusinessDetailsSchema);

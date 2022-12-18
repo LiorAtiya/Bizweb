@@ -7,7 +7,7 @@ const JWT_SECRET = "fdsfdsdcdswere()fdsfds32423fscdsf343fdfdfdfxasdggg"
 //Register
 router.post('/register', async (req, res) => {
     const { firstname, lastname, username,
-        email, password, business, isAdmin } = req.body;
+        email, password, business } = req.body;
 
     const encrypedPassword = await bcrypt.hash(password, 10);
 
@@ -19,16 +19,16 @@ router.post('/register', async (req, res) => {
         }
 
         //create new user
-        await User.create({
+        const newUser = await User.create({
             firstname,
             lastname,
             username,
             email,
             password: encrypedPassword,
             business,
-            isAdmin,
         });
-        res.send({ status: "ok" })
+
+        res.send(newUser)
     } catch (error) {
         res.send({ status: "error" })
     }

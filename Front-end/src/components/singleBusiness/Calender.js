@@ -1,5 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
+import app from '../../database/firebase_config'
+
+import {
+    getAuth,
+    RecaptchaVerifier,
+    signInWithPhoneNumber
+} from "firebase/auth";
 
 //Calender
 import TextField from '@mui/material/TextField';
@@ -15,6 +22,7 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
+const auth = getAuth(app)
 
 const Calendar = ({ id }) => {
     // const [highlightedDays, setHighlightedDays] = useState([1, 2, 13]);
@@ -27,7 +35,7 @@ const Calendar = ({ id }) => {
     //Details of client
     const time = useRef("");
     const name = useRef("");
-    const phone = useRef("");
+    // const phone = useRef("");
     const comments = useRef("");
 
     //============ Admin Permissions ============
@@ -47,6 +55,69 @@ const Calendar = ({ id }) => {
         }
         return false;
     }
+
+    // ========== OTP Verify ==================
+
+    const otp = useRef();
+    const [phone, setPhone] = useState("");
+    const [verifyOtp, setVerifyOtp] = useState(false);
+    const [verifyButton, setVerifyButton] = useState(false);
+    const [verified, setVerified] = useState(false);
+
+    const changeMobile = (e) => {
+        setPhone(e.target.value);
+        if (phone.length === 9) {
+            setVerifyButton(true);
+        } else {
+            setVerifyButton(false);
+        }
+    }
+
+    const onCaptchVerify = () => {
+        const auth = getAuth();
+        window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+            'size': 'invisible',
+            'callback': (response) => {
+                this.onSignInSubmit();
+                // reCAPTCHA solved, allow signInWithPhoneNumber.
+                // ...
+            },
+        }, auth);
+    }
+
+    //send otp code to confirm number phone
+    const onSignInSubmit = () => {
+        onCaptchVerify();
+        const phoneNumber = "+972" + phone;
+        const appVerifier = window.recaptchaVerifier;
+
+        signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+            .then((confirmationResult) => {
+                // SMS sent. Prompt user to type the code from the message, then sign the
+                // user in with confirmationResult.confirm(code).
+                window.confirmationResult = confirmationResult;
+                alert("otp sended")
+                setVerifyOtp(true);
+            }).catch((error) => {
+                // Error; SMS not sent
+                // ...
+            });
+    }
+
+    const verifyCode = () => {
+        window.confirmationResult.confirm(otp.current.value).then((result) => {
+            // User signed in successfully.
+            const user = result.user;
+            console.log(user);
+            alert("Verification Done")
+            setVerified(true);
+            setVerifyOtp(false);
+        }).catch((error) => {
+            alert("Invalid Otp")
+        });
+    }
+
+    // =============================================
 
     const dateAppoimentsFiltered = () => {
         return events.dates.filter(event => event.date == value.getDate() + "/" + (value.getMonth() + 1) + "/" + value.getFullYear());
@@ -82,19 +153,25 @@ const Calendar = ({ id }) => {
     const handleClick = async (e) => {
         e.preventDefault();
 
-        const appointment = {
-            businessID: id,
-            busy: true,
-            date: value.getDate() + "/" + (value.getMonth() + 1) + "/" + value.getFullYear(),
-            time: time.current.value,
-            name: name.current.value,
-            phone: phone.current.value,
-            comments: comments.current.value,
-        }
-        await axios.post('http://localhost:5015/api/calender/create-event', appointment);
-        console.log("Added new event to calender");
+        if (verified) {
 
-        window.location.reload(false);
+            const appointment = {
+                businessID: id,
+                busy: true,
+                date: value.getDate() + "/" + (value.getMonth() + 1) + "/" + value.getFullYear(),
+                time: time.current.value,
+                name: name.current.value,
+                phone: phone,
+                comments: comments.current.value,
+            }
+            await axios.post('http://localhost:5015/api/calender/create-event', appointment);
+            console.log("Added new event to calender");
+
+            window.location.reload(false);
+
+        } else {
+            alert("Please Verify Mobile");
+        }
     }
 
     //for chosen times to add
@@ -127,15 +204,15 @@ const Calendar = ({ id }) => {
     }
 
     const deleteEvent = async (t, date) => {
-        console.log("time: "+t+" | date: "+date);
+        console.log("time: " + t + " | date: " + date);
         const appointment = {
             businessID: id,
             date: date,
             time: t
         }
 
-        await axios.delete('http://localhost:5015/api/calender/delete-event', 
-        { data: { businessID: id ,date: date, time: t } });
+        await axios.delete('http://localhost:5015/api/calender/delete-event',
+            { data: { businessID: id, date: date, time: t } });
         window.location.reload(false);
     }
 
@@ -261,23 +338,23 @@ const Calendar = ({ id }) => {
                                         dateAppoimentsFiltered().map(item => {
                                             return (
                                                 <>
-                                                <Card>
-                                                    <Card.Header><b>Time:</b> {item.time}</Card.Header>
-                                                    <Card.Body>
-                                                        {/* <Card.Title>Special title treatment</Card.Title> */}
-                                                        <Card.Text>
-                                                            <b>Name: </b>{item.name}
-                                                            <br />
-                                                            <b>Phone: </b>{item.phone}
-                                                            <br />
-                                                            <b>Comments: </b>{item.comments}
-                                                            <br />
-                                                        </Card.Text>
-                                                        <Button variant="btn btn-danger" 
-                                                        onClick={() => deleteEvent(item.time, value.getDate() + "/" + (value.getMonth() + 1) + "/" + value.getFullYear())}>Delete</Button>
-                                                    </Card.Body>
-                                                </Card>
-                                                <br />
+                                                    <Card>
+                                                        <Card.Header><b>Time:</b> {item.time}</Card.Header>
+                                                        <Card.Body>
+                                                            {/* <Card.Title>Special title treatment</Card.Title> */}
+                                                            <Card.Text>
+                                                                <b>Name: </b>{item.name}
+                                                                <br />
+                                                                <b>Phone: </b>{item.phone}
+                                                                <br />
+                                                                <b>Comments: </b>{item.comments}
+                                                                <br />
+                                                            </Card.Text>
+                                                            <Button variant="btn btn-danger"
+                                                                onClick={() => deleteEvent(item.time, value.getDate() + "/" + (value.getMonth() + 1) + "/" + value.getFullYear())}>Delete</Button>
+                                                        </Card.Body>
+                                                    </Card>
+                                                    <br />
                                                 </>
                                             )
                                         })
@@ -296,6 +373,7 @@ const Calendar = ({ id }) => {
                         <Card.Text>
 
                             <form onSubmit={handleClick}>
+                                <div id="recaptcha-container"></div>
                                 <div className="mb-3">
                                     <label>
                                         Choose an available time:<br></br>
@@ -316,7 +394,7 @@ const Calendar = ({ id }) => {
                                     />
                                 </div>
 
-                                <div className="mb-3">
+                                {/* <div className="mb-3">
                                     <label>Phone number</label>
                                     <input
                                         type="number"
@@ -325,7 +403,42 @@ const Calendar = ({ id }) => {
                                         required
                                         ref={phone}
                                     />
+                                </div> */}
+
+                                <div className="mb-3">
+                                    <label>Phone number</label>
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        placeholder="Enter mobile"
+                                        onChange={(e) => changeMobile(e)}
+                                    />
+                                    {verifyButton ?
+                                        <input
+                                            type="button"
+                                            value={verified ? "Verified" : "Verify"}
+                                            onClick={onSignInSubmit}
+                                            style={{ backgroundColor: "#0163d2", width: "100%", padding: 8, color: "white", border: "none" }} />
+                                        : null}
                                 </div>
+
+                                {verifyOtp ?
+                                    <div className="mb-3">
+                                        <label>OTP</label>
+                                        <input
+                                            type="number"
+                                            className="form-control"
+                                            placeholder="Enter OTP"
+                                            ref={otp}
+                                        // onChange={(e) => setOtp({ otp: e.target.value })}
+                                        />
+                                        <input
+                                            type="button"
+                                            value="OTP"
+                                            onClick={verifyCode}
+                                            style={{ backgroundColor: "#0163d2", width: "100%", padding: 8, color: "white", border: "none" }} />
+
+                                    </div> : null}
 
                                 <div className="mb-3">
                                     <label>Additional Comments</label>

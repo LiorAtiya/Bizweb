@@ -37,9 +37,6 @@ router.post('/add', async (req, res) => {
             authentication,
         })
 
-        console.log("cordination:")
-        console.log(coordination.candidates);
-
         //create new business
         const business = await Business.create({
             category,

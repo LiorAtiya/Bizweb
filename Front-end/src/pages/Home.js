@@ -7,7 +7,6 @@ import Hero from '../components/Hero';
 import Banner from '../components/Banner'
 import Services from '../components/home/Services';
 import CategoryBusiness from '../components/home/CategoryBusiness'
-import BingMapsReact from "bingmaps-react";
 
 class Home extends Component {
     constructor() {
@@ -49,18 +48,6 @@ class Home extends Component {
                     </Hero>
                     <CategoryBusiness categories={filteredCategories} />
                     <Services />
-                    <BingMapsReact
-                        bingMapsKey="Am7ABZsl1hVs093AjZV82C3wxd-NCQ-KtBLpdtv4uB1UBvqIx7vcgN7Dw1A9RpQt"
-                        height="500px"
-                        mapOptions={{
-                            navigationBarMode: "square",
-                        }}
-                        width="500px"
-                        viewOptions={{
-                            center: { latitude: 42.360081, longitude: -71.058884 },
-                            // mapTypeId: "grayscale",
-                        }}
-                    />
                 </>
             );
         }

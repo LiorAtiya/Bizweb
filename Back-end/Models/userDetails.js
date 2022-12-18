@@ -15,7 +15,6 @@ const UserDetailsSchema = new mongoose.Schema({
         type: String,
         require: true,
         min: 3,
-        max: 20,
         unique: true,
     },
     email: {
@@ -33,14 +32,8 @@ const UserDetailsSchema = new mongoose.Schema({
         type: Array,
         default: [],
     },
-    isAdmin: {
-        type: Boolean,
-        default: false,
-    }
 },
     { timestamps: true }
 );
-
-
 
 module.exports = mongoose.model("UserDetails", UserDetailsSchema);

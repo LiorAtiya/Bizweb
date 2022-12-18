@@ -1,15 +1,15 @@
-import React, {useRef } from "react";
+import React, {useRef, useState } from "react";
+import app from '../database/firebase_config'
 
-// import app from '../database/firebase_config'
 import { 
-  // getAuth, 
-  // RecaptchaVerifier, 
-  // signInWithPhoneNumber 
+  getAuth, 
+  RecaptchaVerifier, 
+  signInWithPhoneNumber 
 } from "firebase/auth";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 
-// const auth = getAuth(app)
+const auth = getAuth(app)
 
 export default function Register() {
   const firstname = useRef();
@@ -18,6 +18,66 @@ export default function Register() {
   const email = useRef();
   const password = useRef();
   const history = useHistory();
+
+  const otp = useRef();
+  const [phone, setPhone] = useState("");
+  const [verifyOtp, setVerifyOtp] = useState(false);
+  const [verifyButton, setVerifyButton] = useState(false);
+  const [verified, setVerified] = useState(false);
+
+  const changeMobile = (e) => {
+    console.log(phone.length)
+    setPhone(e.target.value);
+    if(phone.length === 9) {
+      setVerifyButton(true);
+    }else{
+      setVerifyButton(false);
+    }
+  }
+
+  const onCaptchVerify = () => {
+    const auth = getAuth();
+    window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+      'size': 'invisible',
+      'callback': (response) => {
+        this.onSignInSubmit();
+        // reCAPTCHA solved, allow signInWithPhoneNumber.
+        // ...
+      },
+    }, auth);
+  }
+
+  //send otp code to confirm number phone
+  const onSignInSubmit = () => {
+    onCaptchVerify();
+    const phoneNumber = "+972" + phone;
+    const appVerifier = window.recaptchaVerifier;
+
+    signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+    .then((confirmationResult) => {
+      // SMS sent. Prompt user to type the code from the message, then sign the
+      // user in with confirmationResult.confirm(code).
+      window.confirmationResult = confirmationResult;
+      alert("otp sended")
+      setVerifyOtp(true);
+    }).catch((error) => {
+      // Error; SMS not sent
+      // ...
+    });
+  }
+  
+  const verifyCode = () => {
+    window.confirmationResult.confirm(otp.current.value).then((result) => {
+      // User signed in successfully.
+      const user = result.user;
+      console.log(user);
+      alert("Verification Done")
+      setVerified(true);
+      setVerifyOtp(false);
+    }).catch((error) => {
+      alert("Invalid Otp")
+    });
+  }
 
   const handleClick = async (e) => {
     e.preventDefault();
@@ -30,11 +90,15 @@ export default function Register() {
       password: password.current.value,
     };
 
-    try {
-      await axios.post("http://localhost:5015/api/auth/register",user);
-      history.push('/login');
-    }catch(err){
-      console.log(err);
+    if(verified) {
+      try {
+        await axios.post("http://localhost:5015/api/auth/register",user);
+        history.push('/login');
+      }catch(err){
+        console.log(err);
+      }
+    } else {
+      alert("Please Verify Mobile");
     }
   }
 
@@ -52,7 +116,6 @@ export default function Register() {
           placeholder="First name"
           required
           ref={firstname}
-          // onChange={(e) => this.setState({ fname: e.target.value })}
         />
       </div>
 
@@ -64,7 +127,6 @@ export default function Register() {
           placeholder="Last name"
           required
           ref={lastname}
-          // onChange={(e) => this.setState({ lname: e.target.value })}
         />
       </div>
 
@@ -76,42 +138,43 @@ export default function Register() {
           placeholder="Username"
           required
           ref={username}
-          // onChange={(e) => this.setState({ lname: e.target.value })}
         />
       </div>
 
-      {/* <div className="mb-3">
+      <div className="mb-3">
         <label>Mobile</label>
         <input
           type="number"
           className="form-control"
           placeholder="Enter mobile"
-          onChange={(e) => this.changeMobile(e)}
+          onChange={(e) => changeMobile(e)}
         />
-        {this.state.verifyButton? <input 
+        {verifyButton? 
+        <input 
         type="button" 
-        value={this.state.verified? "Verified" : "Verify"}
-        onClick={this.onSignInSubmit} 
+        value={verified? "Verified" : "Verify"}
+        onClick={onSignInSubmit} 
         style={{backgroundColor:"#0163d2",width:"100%",padding:8, color:"white", border:"none"}}/>
         : null}
-      </div> */}
+      </div>
       
-      {/* {this.state.verifyOtp? 
+      {verifyOtp? 
       <div className="mb-3">
         <label>OTP</label>
         <input
           type="number"
           className="form-control"
           placeholder="Enter OTP"
-          onChange={(e) => this.setState({ otp: e.target.value })}
+          ref={otp}
+          // onChange={(e) => setOtp({ otp: e.target.value })}
         />
         <input 
         type="button" 
         value="OTP" 
-        onClick={this.verifyCode} 
+        onClick={verifyCode} 
         style={{backgroundColor:"#0163d2",width:"100%",padding:8, color:"white", border:"none"}}/>
 
-      </div>: null} */}
+      </div>: null}
 
       <div className="mb-3">
         <label>Email address</label>
@@ -119,7 +182,6 @@ export default function Register() {
           type="email"
           className="form-control"
           placeholder="Enter email"
-          // onChange={(e) => this.setState({ email: e.target.value })}
           required
           ref={email}
         />
@@ -131,7 +193,6 @@ export default function Register() {
           type="password"
           className="form-control"
           placeholder="Enter password"
-          // onChange={(e) => this.setState({ password: e.target.value })}
           required
           ref={password}
         />
@@ -255,26 +316,6 @@ export default function Register() {
 //       <form onSubmit={this.handleSubmit} className="auth-inner">
 //         <h3>Sign Up</h3>
 //         <div id="recaptcha-container"></div>
-
-//         <div className="mb-3">
-//           <label>First name</label>
-//           <input
-//             type="text"
-//             className="form-control"
-//             placeholder="First name"
-//             onChange={(e) => this.setState({ fname: e.target.value })}
-//           />
-//         </div>
-
-//         <div className="mb-3">
-//           <label>Last name</label>
-//           <input
-//             type="text"
-//             className="form-control"
-//             placeholder="Last name"
-//             onChange={(e) => this.setState({ lname: e.target.value })}
-//           />
-//         </div>
 
 //         <div className="mb-3">
 //           <label>Mobile</label>
