@@ -1,7 +1,9 @@
 const router = require('express').Router();
 const Business = require('../Models/businessDetails');
 const Calender = require('../Models/calender');
+//Images cloud API
 const cloudinary = require('cloudinary');
+//Location API
 const ApiKeyManager = require('@esri/arcgis-rest-request').ApiKeyManager;
 const geocode = require('@esri/arcgis-rest-geocoding').geocode;
 
@@ -14,9 +16,9 @@ cloudinary.config({
     api_secret: process.env.CLOUD_API_SECRET,
 })
 
-//For location
+//For location API
 const apiKey = "AAPK59deace2cae94e53bbcf5811a8821134Oo-deTYayYmeeCCCei_3SsXpHWolWHqZmMY4lt8TMnqFsD1I4_JoAOZ7O8vSEO8K";
-const authentication = ApiKeyManager.fromKey(apiKey);
+const authentication = ApiKeyManager.fromKey(apiKey); 
 
 //Add business
 router.post('/add', async (req, res) => {
@@ -80,6 +82,17 @@ router.put('/:id', async (req, res) => {
     } else {
         return res.status(403).json('You can update only your business');
     }
+})
+
+//Update background picture of business
+router.put("/:id/background", async (req, res) => {
+        try {
+            await Business.findByIdAndUpdate({ _id: req.params.id }, { backgroundPicture: req.body.backgroundPicture })
+            console.log("Added new review");
+            res.status(200).json();
+        } catch (err) {
+            res.status(500).json(err);
+        }
 })
 
 //get one business
@@ -177,24 +190,6 @@ router.get("/:id/gallery", async (req, res) => {
         res.status(500).json(err);
     }
 })
-
-// //get location
-// router.get("/:id/location", async (req, res) => {
-
-//     // var geocoder = new google.maps.Geocoder();
-//     // geocoder.geocode({
-//     //     "address": "Tel Aviv"
-//     // }, function (results) {
-//     //     console.log(results[0].geometry.location); //LatLng
-//     // });
-//     // try {
-//     //     const user = await Business.findById(req.params.id);
-//     //     res.status(200).json(user.gallery)
-//     //     console.log("Get gallery");
-//     // } catch (err) {
-//     //     res.status(500).json(err);
-//     // }
-// })
 
 //Update calender
 //Update location

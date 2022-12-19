@@ -13,6 +13,7 @@ export default class BusinessProvider extends Component {
         featuredBusiness: [],
         loading: true,
         city: "all",
+        businessName: "",
         // capacity: 1,
         // price: 0,
         // minPrice: 0,
@@ -76,7 +77,7 @@ export default class BusinessProvider extends Component {
         const name = event.target.name;
         this.setState(
             {
-                [name]: value
+                [name]: value,
             },
             this.filterBusiness
         );
@@ -86,6 +87,7 @@ export default class BusinessProvider extends Component {
         let {
             business,
             city,
+            businessName,
             // capacity,
             // price,
             // minPrice,
@@ -102,7 +104,13 @@ export default class BusinessProvider extends Component {
         //filter by city
         if (city !== 'all') {
             tempBusiness = tempBusiness.filter(busi => busi.city === city);
-        }       
+        }
+
+        if (businessName != "") {
+            //filter by business name
+            tempBusiness = tempBusiness.filter(
+                busi => busi.name.toLowerCase().includes(businessName.toLowerCase()));
+        }
 
         this.setState({
             sortedBusiness: tempBusiness

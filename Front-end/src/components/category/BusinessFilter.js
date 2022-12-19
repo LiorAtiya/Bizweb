@@ -43,14 +43,25 @@ export default function BusinessFilter({ business }) {
   return (
     <section className='filter-container'>
       <form className='filter-form'>
-        {/* slect type */}
+
         <div className='form-group'>
           <label htmlFor='type'>Filter by city</label>
           <select name='city' id='city' value={city} className='form-control' onChange={handleChange}>
             {types}
           </select>
         </div>
-        {/* end slect type */}
+
+        <div className='form-group'>
+            <label htmlFor='type'>Filter by name</label>
+            <input 
+                name='businessName'
+                type='search'
+                className='form-control'
+                placeholder='Search by business name'
+                onChange={handleChange}
+            />
+        </div>
+
         {/* guest */}
         {/* <div className='form-group'>
           <label htmlFor='capacity'>Guest</label>

@@ -70,10 +70,4 @@ router.put("/:id/business", async (req, res) => {
     }
 })
 
-//Add business
-//Update gallery
-//Update reviews
-//Update calender
-//Update location
-
 module.exports = router;

@@ -9,10 +9,9 @@ const userRoute = require('./Routes/users')
 const authRoute = require('./Routes/auth')
 const businessRoute = require('./Routes/business')
 const calenderRoute = require('./Routes/calander')
-
 // const imageRoute = require('./Routes/images')
-dotenv.config();
 
+dotenv.config();
 const app = express();
 
 //============ Connection to database ================    
@@ -25,18 +24,18 @@ mongoose.connect(process.env.MONGODB_URI, {
     .catch((e) => console.log(e));
 
 
-//middleware
+//Middleware
 app.use(express.json())
 app.use(helmet())
 app.use(morgan('common'))
 app.use(cors());
 app.use(bodyParser.json())
 
+//Routes
 app.use('/api/users', userRoute);
 app.use('/api/auth', authRoute);
 app.use('/api/business', businessRoute);
 app.use('/api/calender',calenderRoute);
-
 // app.use('/api/gallery', imageRoute);
 
 app.listen(5015, () => {

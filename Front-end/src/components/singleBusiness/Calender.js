@@ -203,16 +203,10 @@ const Calendar = ({ id }) => {
         window.location.reload(false);
     }
 
-    const deleteEvent = async (t, date) => {
-        console.log("time: " + t + " | date: " + date);
-        const appointment = {
-            businessID: id,
-            date: date,
-            time: t
-        }
+    const deleteEvent = async (t,name, phone, date) => {
 
         await axios.delete('http://localhost:5015/api/calender/delete-event',
-            { data: { businessID: id, date: date, time: t } });
+            { data: { businessID: id, date: date, time: t ,name: name, phone: phone} });
         window.location.reload(false);
     }
 
@@ -351,7 +345,7 @@ const Calendar = ({ id }) => {
                                                                 <br />
                                                             </Card.Text>
                                                             <Button variant="btn btn-danger"
-                                                                onClick={() => deleteEvent(item.time, value.getDate() + "/" + (value.getMonth() + 1) + "/" + value.getFullYear())}>Delete</Button>
+                                                                onClick={() => deleteEvent(item.time,item.name, item.phone, value.getDate() + "/" + (value.getMonth() + 1) + "/" + value.getFullYear())}>Delete</Button>
                                                         </Card.Body>
                                                     </Card>
                                                     <br />

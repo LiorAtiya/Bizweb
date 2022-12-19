@@ -9,6 +9,7 @@ export const GalleryCard = ({ id, name }) => {
   //data of all images
   const [data, setData] = useState([]);
   const [newImage, setNewImage] = useState([]);
+  const [updatedBackgroundImage, setUpdatedBackgroundImage] = useState("");
   const [removeImage, setRemoveImage] = useState("");
 
   useEffect(() => {
@@ -57,21 +58,37 @@ export const GalleryCard = ({ id, name }) => {
     myWidget.open();
   }
 
+  const handleOpenWidgetForBackground = async () => {
+    var myWidget = window.cloudinary.createUploadWidget({
+      cloudName: 'dk5mqzgcv',
+      uploadPreset: 'xw93prxe'
+    }, (error, result) => {
+      if (!error && result && result.event === "success") {
+        console.log('Done! Here is the image info: ', result.info);
+        setUpdatedBackgroundImage(result.info.url);
+      }
+    }
+    )
+
+    //open widget
+    myWidget.open();
+  }
+
   const uploadImage = async () => {
 
-    // let formData = new FormData();
-    // formData.append('image', imageName)
-    // formData.append('name', name);
-
-    // //send request to server for upload new image
-    // await axios.post('http://localhost:5015/api/gallery', formData).
-    //   then((res) => console.log(res.data)).
-    //   catch((err) => console.log(err));
-
     //send request to server for upload new image
-    await axios.put(`http://localhost:5015/api/business/${id}/gallery`, newImage).
+    if (newImage.length !== 0) {
+        await axios.put(`http://localhost:5015/api/business/${id}/gallery`, newImage).
+        then((res) => console.log(res.data)).
+        catch((err) => console.log(err));
+    }
+
+    //update background image
+    if(updatedBackgroundImage != ""){
+      await axios.put(`http://localhost:5015/api/business/${id}/background`, {backgroundPicture: updatedBackgroundImage}).
       then((res) => console.log(res.data)).
       catch((err) => console.log(err));
+    }
 
     window.location.reload(false);
   }
@@ -106,18 +123,21 @@ export const GalleryCard = ({ id, name }) => {
         keyboard={false}
       >
         <Modal.Header closeButton>
-          <h5>Update gallery</h5>
+          <h5>Admin Permissions</h5>
         </Modal.Header>
         <Modal.Body>
-
-          <br></br>
+          {/* <br></br> */}
           {/* <input type="file" filename="image"
             onChange={handleImage} /> */}
+          <h6>Select a photo to add to the gallery:</h6>
           <div id='upload-widget' className='cloudinary-button' onClick={() => handleOpenWidget()}>
-            Choose background image
+            Choose file
           </div>
-          <br></br>
-
+          <br /><br />
+          <h6>Update background photo:</h6>
+          <div id='upload-widget' className='cloudinary-button' onClick={() => handleOpenWidgetForBackground()}>
+            Choose file
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
@@ -146,7 +166,7 @@ export const GalleryCard = ({ id, name }) => {
 
       <Row>
         {
-          data.reverse().map((singleData, i) => {
+          data.map((singleData, i) => {
             // const base64String = btoa(
             //   String.fromCharCode(...new Uint8Array(singleData.img.data.data))
             // );

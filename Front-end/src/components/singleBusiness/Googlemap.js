@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React from 'react'
 import Card from 'react-bootstrap/Card';
-import axios from 'axios';
 import BingMapsReact from "bingmaps-react";
 import waze from '../../images/waze.svg'
 import googlemaps from '../../images/googlemaps.png'
