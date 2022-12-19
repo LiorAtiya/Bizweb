@@ -2,8 +2,8 @@ const router = require('express').Router();
 const Calender = require('../Models/calender')
 
 //For Sending SMS API
-const accountSid = 'AC6e9f3c0fbcdb78099ad021619a63b6e3'
-const authToken = '11f7df5764cae7a0df472b869dbe0a51'
+const accountSid = process.env.ACCOUNT_SID
+const authToken = process.env.AUTH_TOKEN
 const client = require('twilio')(accountSid, authToken, {
     lazyLoading: true
 });
