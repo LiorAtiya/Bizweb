@@ -40,7 +40,7 @@ class Home extends Component {
                 <>
                     <Hero>
                         {/* <div className='tc'>  */}
-                        <Banner title="Facework" subtitle="Social network for business">
+                        <Banner title="Facework" subtitle="Sample Site for any business">
                             {/* <Link to='/register' className='btn-primary'>Register</Link> */}
                             <SearchBox searchChange={this.onSearchChange} />
                         </Banner>

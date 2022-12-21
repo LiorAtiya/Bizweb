@@ -25,7 +25,7 @@ import Modal from 'react-bootstrap/Modal';
 const auth = getAuth(app)
 
 const Calendar = ({ id, businessName }) => {
-    // const [highlightedDays, setHighlightedDays] = useState([1, 2, 13]);
+    const [highlightedDays, setHighlightedDays] = useState([1, 2, 13]);
     const [value, setValue] = useState(new Date());
     const [Flag, setFlag] = useState(false);
     const [events, setEvents] = useState([]);
@@ -167,16 +167,16 @@ const Calendar = ({ id, businessName }) => {
             }
             await axios.post('http://localhost:5015/api/calender/create-event', appointment);
             console.log("Added new event to calender");
-            
-            if(getUserData){
+
+            if (getUserData) {
                 await axios.put(`http://localhost:5015/api/users/${getUserData._id}/newappointment`, appointment)
-                .then((res) => {
-                    if (res.status !== 500) {
-                      window.localStorage.setItem("token", JSON.stringify(res.data));
-                      console.log("Added new appointment to list of user");
-                      window.location.reload(false);
-                    }
-                })
+                    .then((res) => {
+                        if (res.status !== 500) {
+                            window.localStorage.setItem("token", JSON.stringify(res.data));
+                            console.log("Added new appointment to list of user");
+                            window.location.reload(false);
+                        }
+                    })
             }
 
             window.location.reload(false);
@@ -215,16 +215,18 @@ const Calendar = ({ id, businessName }) => {
         window.location.reload(false);
     }
 
-    const deleteEvent = async (t,name, phone, date) => {
+    const deleteEvent = async (t, name, phone, date) => {
 
         await axios.delete('http://localhost:5015/api/calender/delete-event',
-            { data: { businessID: id, date: date, time: t ,name: name, phone: phone} });
+            { data: { businessID: id, date: date, time: t, name: name, phone: phone } });
         window.location.reload(false);
     }
 
 
     return (
         <div style={{ display: "flex", alignItems: "center" }}>
+
+            {/* ============== Start Calender ================== */}
 
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <StaticDatePicker
@@ -238,6 +240,20 @@ const Calendar = ({ id, businessName }) => {
 
                         //========== Filter for select free hour to appiment ========
                         const filtered = events.availableHours.filter(event => event.date === newValue.getDate() + "/" + (newValue.getMonth() + 1) + "/" + newValue.getFullYear());
+
+                        // sort by name
+                        filtered.sort((a, b) => {
+                            const nameA = a.time // ignore upper and lowercase
+                            const nameB = b.time // ignore upper and lowercase
+                            if (nameA < nameB) {
+                                return -1;
+                            }
+                            if (nameA > nameB) {
+                                return 1;
+                            }
+                            // names must be equal
+                            return 0;
+                        });
 
                         let selectFreeEvent = filtered.map((item, index) => {
                             return <option value={item.time} key={index}>{item.time}</option>
@@ -262,22 +278,24 @@ const Calendar = ({ id, businessName }) => {
                     }}
                     renderInput={(params) => <TextField {...params} />}
                 // renderDay={(day, _value, DayComponentProps) => {
-                // const isSelected =
-                //     !DayComponentProps.outsideCurrentMonth &&
-                //     highlightedDays.indexOf(day.getDate()) >= 0;
+                //     const isSelected =
+                //         !DayComponentProps.outsideCurrentMonth &&
+                //         highlightedDays.indexOf(day.getDate()) >= 0;
 
-                // return (
-                //     <Badge
-                //         key={day.toString()}
-                //         overlap='circular'
-                //         badgeContent={isSelected ? <CheckIcon color='red' /> : undefined}
-                //     >
-                //         <PickersDay {...DayComponentProps} />
-                //     </Badge>
-                // );
+                //     return (
+                //         <Badge
+                //             key={day.toString()}
+                //             overlap='circular'
+                //             badgeContent={isSelected ? <CheckIcon color='red' /> : undefined}
+                //         >
+                //             <PickersDay {...DayComponentProps} />
+                //         </Badge>
+                //     );
                 // }}
                 />
             </LocalizationProvider>
+            {/* ============== End Calender ================== */}
+
             {Flag ?
                 <Card style={{ width: '30rem', marginLeft: "30px", display: 'flex' }}>
                     <Card.Body>
@@ -357,7 +375,7 @@ const Calendar = ({ id, businessName }) => {
                                                                 <br />
                                                             </Card.Text>
                                                             <Button variant="btn btn-danger"
-                                                                onClick={() => deleteEvent(item.time,item.name, item.phone, value.getDate() + "/" + (value.getMonth() + 1) + "/" + value.getFullYear())}>Delete</Button>
+                                                                onClick={() => deleteEvent(item.time, item.name, item.phone, value.getDate() + "/" + (value.getMonth() + 1) + "/" + value.getFullYear())}>Delete</Button>
                                                         </Card.Body>
                                                     </Card>
                                                     <br />
@@ -384,7 +402,10 @@ const Calendar = ({ id, businessName }) => {
                                     <label>
                                         Choose an available time:<br></br>
                                         <select style={{ display: "inline" }} className="form-control" ref={time}>
-                                            {filteredFreeEvents}
+                                            {filteredFreeEvents.length != 0 ? 
+                                                filteredFreeEvents : 
+                                                <option value={0} key={0}>No available hours on this day</option>
+                                                }
                                         </select>
                                     </label>
                                 </div>
@@ -399,17 +420,6 @@ const Calendar = ({ id, businessName }) => {
                                         ref={name}
                                     />
                                 </div>
-
-                                {/* <div className="mb-3">
-                                    <label>Phone number</label>
-                                    <input
-                                        type="number"
-                                        className="form-control"
-                                        placeholder="Enter location"
-                                        required
-                                        ref={phone}
-                                    />
-                                </div> */}
 
                                 <div className="mb-3">
                                     <label>Phone number</label>
@@ -436,7 +446,6 @@ const Calendar = ({ id, businessName }) => {
                                             className="form-control"
                                             placeholder="Enter OTP"
                                             ref={otp}
-                                        // onChange={(e) => setOtp({ otp: e.target.value })}
                                         />
                                         <input
                                             type="button"

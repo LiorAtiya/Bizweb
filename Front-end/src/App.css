@@ -166,7 +166,7 @@
     /* border-radius: 0px 0px 50px 50px; */
   }
   .roomsHero {
-    background-image: url("./images/room-2.jpeg");
+    background-image: url("./images/defaultImg.png");
     min-height: 60vh;
   }
 

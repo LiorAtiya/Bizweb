@@ -2,7 +2,7 @@ import React from 'react'
 // import Hero from '../components/Hero'
 // import Banner from '../components/Banner'
 import { Link } from 'react-router-dom'
-import defaultImg from "../../images/room-1.jpeg"
+import defaultImg from "../../images/defaultImg.png"
 // import PropTypes from "prop-types";
 
 //Card of business from some category
