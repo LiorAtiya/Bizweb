@@ -7,8 +7,8 @@ const cloudinary = require('cloudinary');
 const ApiKeyManager = require('@esri/arcgis-rest-request').ApiKeyManager;
 const geocode = require('@esri/arcgis-rest-geocoding').geocode;
 
-//For cloudinary
 require('dotenv').config();
+
 //Connect to cloudinary
 cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
@@ -17,7 +17,7 @@ cloudinary.config({
 })
 
 //For location API
-const apiKey = process.env.BING_MAPS_API_KEY
+const apiKey = 'AAPK59deace2cae94e53bbcf5811a8821134Oo-deTYayYmeeCCCei_3SsXpHWolWHqZmMY4lt8TMnqFsD1I4_JoAOZ7O8vSEO8K'
 const authentication = ApiKeyManager.fromKey(apiKey); 
 
 //Add business
@@ -60,7 +60,6 @@ router.post('/add', async (req, res) => {
             dates: [],
             availableHours: [],
         });
-        // console.log(business);
         res.send(business);
     } catch (error) {
         res.send({ status: "error" })

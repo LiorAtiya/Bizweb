@@ -10,6 +10,7 @@ import Error from './pages/Error';
 import Category from './pages/Category';
 import SingleBusiness from './pages/SingleBusiness'
 import NewBusiness from './pages/NewBusiness';
+import MyAppointments from './pages/MyAppointments';
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 // import { AuthContext } from './context/AuthContext';
@@ -38,6 +39,9 @@ export default function App() {
                     </Route>
                     <Route exact path="/newbusiness">
                         <NewBusiness />
+                    </Route>
+                    <Route exact path="/myappointments">
+                        <MyAppointments />
                     </Route>
                     <Route exact path="/category/:type">
                         <Category />

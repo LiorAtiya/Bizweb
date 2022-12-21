@@ -14,15 +14,10 @@ export default function NewBusiness() {
     const history = useHistory();
 
     const [backgroundPicture, setBackgroundPicture] = useState("");
-    const [imageToRemove, setImageToRemove] = useState([]);
 
     const citiesMap = cities.map((item, index) => {
         return <option value={item.name} key={index}>{item.name}</option>
     })
-
-    const handleRemoveImg = (imgObj) => {
-
-    }
 
     const handleOpenWidget = () => {
         var myWidget = window.cloudinary.createUploadWidget({
@@ -56,6 +51,7 @@ export default function NewBusiness() {
             //send request to server to add new business
             await axios.post("http://localhost:5015/api/business/add", business)
                 .then((res) => {
+                    console.log(res);
                     if (res.status === 200) {
                         //add id of business to list of business of user
                         const businessID = res.data._id;
@@ -64,11 +60,15 @@ export default function NewBusiness() {
                             userID: getUserData._id,
                             business: businessID
                         }
-                        axios.put(`http://localhost:5015/api/users/${getUserData._id}/business`, business);
+                        axios.put(`http://localhost:5015/api/users/${getUserData._id}/business`, business)
+                            .then((res) => {
+                                window.localStorage.removeItem('token');
+                                window.localStorage.setItem("token", JSON.stringify(res.data));
 
-                        console.log("Added new business to list of user");
-                        history.push('/');
-                        window.location.reload(false);
+                                history.push('/');
+                                window.location.reload(false);
+                            });
+
                     }
                 })
         } catch (err) {
@@ -157,8 +157,8 @@ export default function NewBusiness() {
                                 <div className='images-preview'>
                                     <img src={backgroundPicture} />
                                 </div>
-                            :
-                            null
+                                :
+                                null
                         }
                     </div>
 

@@ -7,7 +7,7 @@ const JWT_SECRET = "fdsfdsdcdswere()fdsfds32423fscdsf343fdfdfdfxasdggg"
 //Register
 router.post('/register', async (req, res) => {
     const { firstname, lastname, username,
-        email, password, business } = req.body;
+        email, password } = req.body;
 
     const encrypedPassword = await bcrypt.hash(password, 10);
 
@@ -25,7 +25,8 @@ router.post('/register', async (req, res) => {
             username,
             email,
             password: encrypedPassword,
-            business,
+            business: [],
+            myAppointments: [],
         });
 
         res.send(newUser)
@@ -55,6 +56,5 @@ router.post('/login', async (req, res) => {
     }
     res.json({ status: "error", error: "Invalid Password" })
 })
-
 
 module.exports = router;

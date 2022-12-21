@@ -24,7 +24,7 @@ import Modal from 'react-bootstrap/Modal';
 
 const auth = getAuth(app)
 
-const Calendar = ({ id }) => {
+const Calendar = ({ id, businessName }) => {
     // const [highlightedDays, setHighlightedDays] = useState([1, 2, 13]);
     const [value, setValue] = useState(new Date());
     const [Flag, setFlag] = useState(false);
@@ -156,6 +156,7 @@ const Calendar = ({ id }) => {
         if (verified) {
 
             const appointment = {
+                businessName: businessName,
                 businessID: id,
                 busy: true,
                 date: value.getDate() + "/" + (value.getMonth() + 1) + "/" + value.getFullYear(),
@@ -166,6 +167,17 @@ const Calendar = ({ id }) => {
             }
             await axios.post('http://localhost:5015/api/calender/create-event', appointment);
             console.log("Added new event to calender");
+            
+            if(getUserData){
+                await axios.put(`http://localhost:5015/api/users/${getUserData._id}/newappointment`, appointment)
+                .then((res) => {
+                    if (res.status !== 500) {
+                      window.localStorage.setItem("token", JSON.stringify(res.data));
+                      console.log("Added new appointment to list of user");
+                      window.location.reload(false);
+                    }
+                })
+            }
 
             window.location.reload(false);
 

@@ -23,7 +23,7 @@ export default function SingleBusiness() {
   //get data of business
   const { getBusiness } = context;
   const business = getBusiness(name);
-
+  
   return (
     <>
       {business === undefined ?
@@ -66,7 +66,7 @@ export default function SingleBusiness() {
                               <GalleryCard id={business._id} name={name}/>
                             </Tab.Pane>
                             <Tab.Pane eventKey="second">
-                              <Calender id={business._id} />
+                              <Calender id={business._id} businessName={name}/>
                             </Tab.Pane>
                             <Tab.Pane eventKey="third">
                               <Reviews id={business._id} />

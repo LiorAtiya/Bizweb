@@ -18,11 +18,6 @@ const BusinessDetailsSchema = new mongoose.Schema({
     },
     gallery: Array,
     reviews: Array,
-    calender: {
-        type: String,
-        require: true,
-        default: ""
-    },
     city: {
         type: String,
         require: true,

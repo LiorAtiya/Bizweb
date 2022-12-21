@@ -39,7 +39,7 @@ export default function NavbarComp() {
                 {
                   getUserData ? (
                     <>
-                      <NavDropdown.Item as={Link} to={"/newbusiness"}>
+                      <NavDropdown.Item as={Link} to={"/myappointments"}>
                         My appointments
                       </NavDropdown.Item>
                       <NavDropdown.Divider />
