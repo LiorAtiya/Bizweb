@@ -1,3 +1,2 @@
 # Facework
-<hr>
-## Sample Site for any business
+Sample Site for any business
