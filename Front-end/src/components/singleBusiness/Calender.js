@@ -395,83 +395,86 @@ const Calendar = ({ id, businessName }) => {
                         <h1>Make appointment</h1>
                         <Card.Subtitle className="mb-2 text-muted">{value.getDate() + "/" + (value.getMonth() + 1) + "/" + value.getFullYear()}</Card.Subtitle>
                         <Card.Text>
-
-                            <form onSubmit={handleClick}>
-                                <div id="recaptcha-container"></div>
-                                <div className="mb-3">
-                                    <label>
-                                        Choose an available time:<br></br>
-                                        <select style={{ display: "inline" }} className="form-control" ref={time}>
-                                            {filteredFreeEvents.length != 0 ? 
-                                                filteredFreeEvents : 
-                                                <option value={0} key={0}>No available hours on this day</option>
-                                                }
-                                        </select>
-                                    </label>
-                                </div>
-
-                                <div className="mb-3">
-                                    <label>Client name</label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        placeholder="Enter name business"
-                                        required
-                                        ref={name}
-                                    />
-                                </div>
-
-                                <div className="mb-3">
-                                    <label>Phone number</label>
-                                    <input
-                                        type="number"
-                                        className="form-control"
-                                        placeholder="Enter mobile"
-                                        onChange={(e) => changeMobile(e)}
-                                    />
-                                    {verifyButton ?
-                                        <input
-                                            type="button"
-                                            value={verified ? "Verified" : "Verify"}
-                                            onClick={onSignInSubmit}
-                                            style={{ backgroundColor: "#0163d2", width: "100%", padding: 8, color: "white", border: "none" }} />
-                                        : null}
-                                </div>
-
-                                {verifyOtp ?
+                            {filteredFreeEvents.length != 0 ?
+                                <form onSubmit={handleClick}>
+                                    <div id="recaptcha-container"></div>
                                     <div className="mb-3">
-                                        <label>OTP</label>
+                                        <label>
+                                            Choose an available time:<br></br>
+                                            <select style={{ display: "inline" }} className="form-control" ref={time}>
+                                                {filteredFreeEvents
+                                                    // filteredFreeEvents :
+                                                    // <option value={0} key={0}>No available hours on this day</option>
+                                                }
+                                            </select>
+                                        </label>
+                                    </div>
+
+                                    <div className="mb-3">
+                                        <label>Client name</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="Enter name business"
+                                            required
+                                            ref={name}
+                                        />
+                                    </div>
+
+                                    <div className="mb-3">
+                                        <label>Phone number</label>
                                         <input
                                             type="number"
                                             className="form-control"
-                                            placeholder="Enter OTP"
-                                            ref={otp}
+                                            placeholder="Enter mobile"
+                                            onChange={(e) => changeMobile(e)}
                                         />
-                                        <input
-                                            type="button"
-                                            value="OTP"
-                                            onClick={verifyCode}
-                                            style={{ backgroundColor: "#0163d2", width: "100%", padding: 8, color: "white", border: "none" }} />
+                                        {verifyButton ?
+                                            <input
+                                                type="button"
+                                                value={verified ? "Verified" : "Verify"}
+                                                onClick={onSignInSubmit}
+                                                style={{ backgroundColor: "#0163d2", width: "100%", padding: 8, color: "white", border: "none" }} />
+                                            : null}
+                                    </div>
 
-                                    </div> : null}
+                                    {verifyOtp ?
+                                        <div className="mb-3">
+                                            <label>OTP</label>
+                                            <input
+                                                type="number"
+                                                className="form-control"
+                                                placeholder="Enter OTP"
+                                                ref={otp}
+                                            />
+                                            <input
+                                                type="button"
+                                                value="OTP"
+                                                onClick={verifyCode}
+                                                style={{ backgroundColor: "#0163d2", width: "100%", padding: 8, color: "white", border: "none" }} />
 
-                                <div className="mb-3">
-                                    <label>Additional Comments</label>
-                                    <textarea
-                                        placeholder="Description of the business"
-                                        className="form-control"
-                                        id="message"
-                                        name="message"
-                                        ref={comments}
-                                    />
-                                </div>
+                                        </div> : null}
 
-                                <div className="d-grid">
-                                    <button type="submit" className="btn btn-success">
-                                        Submit
-                                    </button>
-                                </div>
-                            </form>
+                                    <div className="mb-3">
+                                        <label>Additional Comments</label>
+                                        <textarea
+                                            placeholder="Description of the business"
+                                            className="form-control"
+                                            id="message"
+                                            name="message"
+                                            ref={comments}
+                                        />
+                                    </div>
+
+                                    <div className="d-grid">
+                                        <button type="submit" className="btn btn-success">
+                                            Submit
+                                        </button>
+                                    </div>
+                                </form>
+                                :
+                                <h3>No available hours on this day</h3>
+                            }
                         </Card.Text>
                     </Card.Body>
                 </Card>
