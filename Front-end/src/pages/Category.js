@@ -23,27 +23,3 @@ export default function Category() {
     </>
   )
 }
-
-// export default class Category extends Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       type: this.props.match.params.type,
-//     }
-//   }
-
-//   render() {
-//     return (
-//       <>
-//         <Hero hero="roomsHero">
-//           <Banner title={this.state.type}>
-//             <Link to="/" className="btn-primary">
-//               return home
-//             </Link>
-//           </Banner>
-//         </Hero>
-//         <BusinessContainer />
-//       </>
-//     )
-//   }
-// }

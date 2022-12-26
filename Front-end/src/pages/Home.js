@@ -39,12 +39,10 @@ class Home extends Component {
             return (
                 <>
                     <Hero>
-                        {/* <div className='tc'>  */}
                         <Banner title="Facework" subtitle="Sample Site for any business">
                             {/* <Link to='/register' className='btn-primary'>Register</Link> */}
                             <SearchBox searchChange={this.onSearchChange} />
                         </Banner>
-                        {/* </div> */}
                     </Hero>
                     <CategoryBusiness categories={filteredCategories} />
                     <Services />

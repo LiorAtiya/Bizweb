@@ -60,6 +60,7 @@ router.post('/add', async (req, res) => {
             dates: [],
             availableHours: [],
         });
+        console.log(business);
         res.send(business);
     } catch (error) {
         res.send({ status: "error" })
@@ -189,9 +190,5 @@ router.get("/:id/gallery", async (req, res) => {
         res.status(500).json(err);
     }
 })
-
-//Update calender
-//Update location
-
 
 module.exports = router;

@@ -54,12 +54,12 @@ export default function Reviews({ id }) {
     useEffect(() => {
         const getResult = async () => {
             //get all images of the business from mongodb
-            await axios.get(`http://localhost:5015/api/business/${id}/reviews`).
-                then((res) => setReviewList(res.data)).
-                catch((err) => console.log(err));
+            await axios.get(`http://localhost:5015/api/business/${id}/reviews`)
+                .then((res) => setReviewList(res.data))
+                .catch((err) => console.log(err));
         };
         getResult();
-    }, []);
+    }, [id]);
 
     //----- Stars Rating --------
     const handleClick = value => {
@@ -144,38 +144,38 @@ export default function Reviews({ id }) {
                         return (
                             <>
                                 {
-                                isAdmin() ?
-                                <Toast onClose={() => removeReview(item.id)}>
-                                    <Toast.Header>
-                                        {/* <img src="holder.js/20x20?text=/%20" className="rounded me-2" alt="" /> */}
-                                        <strong className="me-auto">{item.name}</strong>
-                                        <small>{item.stars}</small>
-                                        <FaStar
-                                            key={i}
-                                            style={{
-                                                marginLeft: '5px',
-                                                cursor: 'pointer'
-                                            }}
-                                        />
-                                    </Toast.Header>
-                                    <Toast.Body>{item.review}</Toast.Body>
-                                </Toast>
-                                :
-                                <Toast onClose={()=> alert('Only admin can remove review')}>
-                                    <Toast.Header>
-                                        {/* <img src="holder.js/20x20?text=/%20" className="rounded me-2" alt="" /> */}
-                                        <strong className="me-auto">{item.name}</strong>
-                                        <small>{item.stars}</small>
-                                        <FaStar
-                                            key={i}
-                                            style={{
-                                                marginLeft: '5px',
-                                                cursor: 'pointer'
-                                            }}
-                                        />
-                                    </Toast.Header>
-                                    <Toast.Body>{item.review}</Toast.Body>
-                                </Toast>
+                                    isAdmin() ?
+                                        <Toast onClose={() => removeReview(item.id)}>
+                                            <Toast.Header>
+                                                {/* <img src="holder.js/20x20?text=/%20" className="rounded me-2" alt="" /> */}
+                                                <strong className="me-auto">{item.name}</strong>
+                                                <small>{item.stars}</small>
+                                                <FaStar
+                                                    key={i}
+                                                    style={{
+                                                        marginLeft: '5px',
+                                                        cursor: 'pointer'
+                                                    }}
+                                                />
+                                            </Toast.Header>
+                                            <Toast.Body>{item.review}</Toast.Body>
+                                        </Toast>
+                                        :
+                                        <Toast onClose={() => alert('Only admin can remove review')}>
+                                            <Toast.Header>
+                                                {/* <img src="holder.js/20x20?text=/%20" className="rounded me-2" alt="" /> */}
+                                                <strong className="me-auto">{item.name}</strong>
+                                                <small>{item.stars}</small>
+                                                <FaStar
+                                                    key={i}
+                                                    style={{
+                                                        marginLeft: '5px',
+                                                        cursor: 'pointer'
+                                                    }}
+                                                />
+                                            </Toast.Header>
+                                            <Toast.Body>{item.review}</Toast.Body>
+                                        </Toast>
                                 }
                                 <br></br>
                             </>

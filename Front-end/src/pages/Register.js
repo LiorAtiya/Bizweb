@@ -1,5 +1,7 @@
 import React, {useRef, useState } from "react";
 import app from '../database/firebase_config'
+import * as Components from '../components/StyledForm';
+import '../styles/Form.css'
 
 import { 
   getAuth, 
@@ -93,7 +95,8 @@ export default function Register() {
     if(verified) {
       try {
         await axios.post("http://localhost:5015/api/auth/register",user);
-        history.push('/login');
+        // history.push('/login');
+        window.location.reload(false);
       }catch(err){
         console.log(err);
       }
@@ -103,112 +106,176 @@ export default function Register() {
   }
 
   return (
-    <div className="auth-wrapper">
-    <form onSubmit={handleClick} className="auth-inner">
-      <h3>Sign Up</h3>
+    <Components.Form onSubmit={handleClick}>
+      <Components.Title>Create Account</Components.Title>
       <div id="recaptcha-container"></div>
 
-      <div className="mb-3">
-        <label>First name</label>
-        <input
-          type="text"
-          className="form-control"
-          placeholder="First name"
+      <Components.Input type='text' placeholder='First Name' 
           required
           ref={firstname}
-        />
-      </div>
-
-      <div className="mb-3">
-        <label>Last name</label>
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Last name"
+      />
+      <Components.Input type='text' placeholder='Last Name' 
           required
           ref={lastname}
-        />
-      </div>
-
-      <div className="mb-3">
-        <label>Username</label>
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Username"
+      />
+      <Components.Input type='text' placeholder='Username' 
           required
           ref={username}
-        />
-      </div>
+      />
 
-      <div className="mb-3">
-        <label>Mobile</label>
-        <input
-          type="number"
-          className="form-control"
-          placeholder="Enter mobile"
+<div>
+      <Components.Input type='number' placeholder='Phone' 
+          required
           onChange={(e) => changeMobile(e)}
-        />
+      />
         {verifyButton? 
-        <input 
+        <Components.Button 
         type="button" 
-        value={verified? "Verified" : "Verify"}
         onClick={onSignInSubmit} 
-        style={{backgroundColor:"#0163d2",width:"100%",padding:8, color:"white", border:"none"}}/>
+        >
+         {verified? "Verified" : "Verify"} 
+        </Components.Button>
         : null}
       </div>
-      
+
       {verifyOtp? 
-      <div className="mb-3">
-        <label>OTP</label>
-        <input
+      <>
+        <Components.Input
           type="number"
-          className="form-control"
           placeholder="Enter OTP"
           ref={otp}
-          // onChange={(e) => setOtp({ otp: e.target.value })}
         />
-        <input 
+        <Components.Button
         type="button" 
         value="OTP" 
         onClick={verifyCode} 
-        style={{backgroundColor:"#0163d2",width:"100%",padding:8, color:"white", border:"none"}}/>
+        >
+          Confirm
+        </Components.Button>
+        </>
+        : 
+        null}
 
-      </div>: null}
-
-      <div className="mb-3">
-        <label>Email address</label>
-        <input
-          type="email"
-          className="form-control"
-          placeholder="Enter email"
+      <Components.Input type='email' placeholder='Email'
           required
           ref={email}
-        />
-      </div>
-
-      <div className="mb-3">
-        <label>Password</label>
-        <input
-          type="password"
-          className="form-control"
-          placeholder="Enter password"
+      />
+      <Components.Input type='password' placeholder='Password' 
           required
           ref={password}
-        />
-      </div>
+      />
 
-      <div className="d-grid">
-        <button type="submit" className="btn btn-primary">
-          Sign Up
-        </button>
-      </div>
-      <p className="forgot-password text-right">
-        Already registered <a href="/login">sign in?</a>
-      </p>
-    </form>
-    </div>
-  );
+      <Components.Button type="submit">Register</Components.Button>
+    </Components.Form>
+  )
+
+  // return (
+  //   <div className="auth-wrapper">
+  //   <form onSubmit={handleClick} className="auth-inner">
+  //     <h3>Sign Up</h3>
+  //     <div id="recaptcha-container"></div>
+
+  //     <div className="mb-3">
+  //       <label>First name</label>
+  //       <input
+  //         type="text"
+  //         className="form-control"
+  //         placeholder="First name"
+  //         required
+  //         ref={firstname}
+  //       />
+  //     </div>
+
+  //     <div className="mb-3">
+  //       <label>Last name</label>
+  //       <input
+  //         type="text"
+  //         className="form-control"
+  //         placeholder="Last name"
+  //         required
+  //         ref={lastname}
+  //       />
+  //     </div>
+
+  //     <div className="mb-3">
+  //       <label>Username</label>
+  //       <input
+  //         type="text"
+  //         className="form-control"
+  //         placeholder="Username"
+  //         required
+  //         ref={username}
+  //       />
+  //     </div>
+
+  //     <div className="mb-3">
+  //       <label>Mobile</label>
+  //       <input
+  //         type="number"
+  //         className="form-control"
+  //         placeholder="Enter mobile"
+  //         onChange={(e) => changeMobile(e)}
+  //       />
+  //       {verifyButton? 
+  //       <input 
+  //       type="button" 
+  //       value={verified? "Verified" : "Verify"}
+  //       onClick={onSignInSubmit} 
+  //       style={{backgroundColor:"#0163d2",width:"100%",padding:8, color:"white", border:"none"}}/>
+  //       : null}
+  //     </div>
+      
+  //     {verifyOtp? 
+  //     <div className="mb-3">
+  //       <label>OTP</label>
+  //       <input
+  //         type="number"
+  //         className="form-control"
+  //         placeholder="Enter OTP"
+  //         ref={otp}
+  //         // onChange={(e) => setOtp({ otp: e.target.value })}
+  //       />
+  //       <input 
+  //       type="button" 
+  //       value="OTP" 
+  //       onClick={verifyCode} 
+  //       style={{backgroundColor:"#0163d2",width:"100%",padding:8, color:"white", border:"none"}}/>
+
+  //     </div>: null}
+
+  //     <div className="mb-3">
+  //       <label>Email address</label>
+  //       <input
+  //         type="email"
+  //         className="form-control"
+  //         placeholder="Enter email"
+  //         required
+  //         ref={email}
+  //       />
+  //     </div>
+
+  //     <div className="mb-3">
+  //       <label>Password</label>
+  //       <input
+  //         type="password"
+  //         className="form-control"
+  //         placeholder="Enter password"
+  //         required
+  //         ref={password}
+  //       />
+  //     </div>
+
+  //     <div className="d-grid">
+  //       <button type="submit" className="btn btn-primary">
+  //         Sign Up
+  //       </button>
+  //     </div>
+  //     <p className="forgot-password text-right">
+  //       Already registered <a href="/login">sign in?</a>
+  //     </p>
+  //   </form>
+  //   </div>
+  // );
 }
 
 

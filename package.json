@@ -1,0 +1,24 @@
+{
+  "name": "facework",
+  "version": "1.0.0",
+  "description": "Sample Site for any business",
+  "main": "index.js",
+  "scripts": {
+    "server": "npm run watch --prefix Back-end",
+    "client": "npm run start --prefix Front-end",
+    "watch": "npm run server & npm run client"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LiorAtiya/Facework.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LiorAtiya/Facework/issues"
+  },
+  "homepage": "https://github.com/LiorAtiya/Facework#readme",
+  "dependencies": {
+    "concurrently": "^7.6.0"
+  }
+}

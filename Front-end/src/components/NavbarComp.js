@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import "../styles/Navbar.css";
 
 export default function NavbarComp() {
 
@@ -24,17 +25,46 @@ export default function NavbarComp() {
     window.location.reload(false);
   }
 
+  // return (
+  //   <nav className='NavbarItems'>
+  //     <h1 className='logo'>Facework <i className='fa-solid fa-briefcase'></i></h1>
+  //     <ul className='nav-menu'>
+  //        <li>
+  //         <a href='index.html' className='nav-links'>
+  //           <i className='fa-solid fa-house-user'></i>
+  //           Home 
+  //         </a>
+  //        </li>
+  //        <li>
+  //         <a href='index.html' className='nav-links'>
+  //           <i className='fa-solid fa-house-user'></i>
+  //           Home 
+  //         </a>
+  //        </li>
+  //        <li>
+  //         <a href='index.html' className='nav-links'>
+  //           <i className='fa-solid fa-house-user'></i>
+  //           Home 
+  //         </a>
+  //        </li>
+  //     </ul>
+  //   </nav>
+  // )
+
   return (
     <div>
-      <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+      <Navbar className='NavbarItems' collapseOnSelect expand="lg" bg="dark" variant="dark">
         <Container>
-          <Navbar.Brand as={Link} to={"/"}>Facework</Navbar.Brand>
+          <Navbar.Brand className='logo' as={Link} to={"/"}>Facework
+          <i className='fa-solid fa-briefcase'></i>
+          </Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="me-auto">
               {/* <Nav.Link as={Link} to={"/login"}>About us</Nav.Link> */}
             </Nav>
-            <Nav>
+            <Nav className='nav-links'>
+              <i className='fa-solid fa fa-user'></i>
               <NavDropdown title={getUserData ? `Hello ${getUserData.firstname}` : "Hello Guest"} id="collasible-nav-dropdown">
                 {
                   getUserData ? (
@@ -53,8 +83,8 @@ export default function NavbarComp() {
                     :
                     (
                       <>
-                        <NavDropdown.Item as={Link} to={"/login"}>Login</NavDropdown.Item>
-                        <NavDropdown.Item as={Link} to={"/register"}>Register</NavDropdown.Item>
+                        <NavDropdown.Item as={Link} to={"/login"}>Login / Register</NavDropdown.Item>
+                        {/* <NavDropdown.Item as={Link} to={"/register"}>Register</NavDropdown.Item> */}
                       </>
                     )
                 }

@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { BusinessContext } from '../../context/BusinessContext'
 import Loading from "../Loading"
-import Title from '../Title';
+// import Title from '../Title';
 import CategoryCard from './CategoryCard';
+import '../../styles/Categories.css'
 
 export default class CategoryBusiness extends Component {
 
@@ -22,7 +23,7 @@ export default class CategoryBusiness extends Component {
     })
     return (
       <section className='featured-rooms'>
-        <Title title="categories" />
+        {/* <Title title="categories" /> */}
         <div className='featured-rooms-center'>
           {loading ? <Loading /> : category}
         </div>

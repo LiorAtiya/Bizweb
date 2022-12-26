@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react'
+import React, { useContext } from 'react'
 // import defaultBcg from "../images/defaultImg.png"
 import { Link } from 'react-router-dom'
 import Banner from '../components/Banner'

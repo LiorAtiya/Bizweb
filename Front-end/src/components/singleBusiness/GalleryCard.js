@@ -1,8 +1,9 @@
-import React, { useEffect, useContext, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Col, Row } from "react-bootstrap";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import axios from 'axios';
+import '../../styles/Gallery.css'
 
 export const GalleryCard = ({ id, name }) => {
 
@@ -15,12 +16,12 @@ export const GalleryCard = ({ id, name }) => {
   useEffect(() => {
     const getResult = async () => {
       //get all images of the business from mongodb
-      await axios.get(`http://localhost:5015/api/business/${id}/gallery`).
-        then((res) => setData(res.data)).
-        catch((err) => console.log(err));
+      await axios.get(`http://localhost:5015/api/business/${id}/gallery`)
+        .then((res) => setData(res.data))
+        .catch((err) => console.log(err));
     };
     getResult();
-  }, []);
+  }, [id]);
 
   //Admin Permissions
   const [show, setShow] = useState(false);
@@ -78,16 +79,16 @@ export const GalleryCard = ({ id, name }) => {
 
     //send request to server for upload new image
     if (newImage.length !== 0) {
-        await axios.put(`http://localhost:5015/api/business/${id}/gallery`, newImage).
-        then((res) => console.log(res.data)).
-        catch((err) => console.log(err));
+      await axios.put(`http://localhost:5015/api/business/${id}/gallery`, newImage)
+        .then((res) => console.log(res.data))
+        .catch((err) => console.log(err));
     }
 
     //update background image
-    if(updatedBackgroundImage != ""){
-      await axios.put(`http://localhost:5015/api/business/${id}/background`, {backgroundPicture: updatedBackgroundImage}).
-      then((res) => console.log(res.data)).
-      catch((err) => console.log(err));
+    if (updatedBackgroundImage !== "") {
+      await axios.put(`http://localhost:5015/api/business/${id}/background`, { backgroundPicture: updatedBackgroundImage })
+        .then((res) => console.log(res.data))
+        .catch((err) => console.log(err));
     }
 
     window.location.reload(false);
@@ -95,9 +96,9 @@ export const GalleryCard = ({ id, name }) => {
 
   const handleRemoveImage = async () => {
     await axios.delete(`http://localhost:5015/api/business/${id}/gallery`,
-      { data: { id: removeImage } }).
-      then((res) => console.log(res.data)).
-      catch((err) => console.log(err));
+      { data: { id: removeImage } })
+      .then((res) => console.log(res.data))
+      .catch((err) => console.log(err));
 
     window.location.reload(false);
   }

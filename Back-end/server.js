@@ -9,7 +9,6 @@ const userRoute = require('./Routes/users')
 const authRoute = require('./Routes/auth')
 const businessRoute = require('./Routes/business')
 const calenderRoute = require('./Routes/calander')
-// const imageRoute = require('./Routes/images')
 
 dotenv.config();
 const app = express();
@@ -36,7 +35,6 @@ app.use('/api/users', userRoute);
 app.use('/api/auth', authRoute);
 app.use('/api/business', businessRoute);
 app.use('/api/calender',calenderRoute);
-// app.use('/api/gallery', imageRoute);
 
 app.listen(5015, () => {
     console.log("Server Started");

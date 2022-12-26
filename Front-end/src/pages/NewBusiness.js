@@ -155,7 +155,7 @@ export default function NewBusiness() {
                         {
                             backgroundPicture !== "" ?
                                 <div className='images-preview'>
-                                    <img src={backgroundPicture} />
+                                    <img src={backgroundPicture} alt="backPic"/>
                                 </div>
                                 :
                                 null

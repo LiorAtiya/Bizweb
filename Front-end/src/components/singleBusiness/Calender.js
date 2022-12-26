@@ -1,12 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import app from '../../database/firebase_config'
+import '../../styles/Calender.css'
 
-import {
-    getAuth,
-    RecaptchaVerifier,
-    signInWithPhoneNumber
-} from "firebase/auth";
+import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 
 //Calender
 import TextField from '@mui/material/TextField';
@@ -25,7 +22,7 @@ import Modal from 'react-bootstrap/Modal';
 const auth = getAuth(app)
 
 const Calendar = ({ id, businessName }) => {
-    const [highlightedDays, setHighlightedDays] = useState([1, 2, 13]);
+    // const [highlightedDays, setHighlightedDays] = useState([1, 2, 13]);
     const [value, setValue] = useState(new Date());
     const [Flag, setFlag] = useState(false);
     const [events, setEvents] = useState([]);
@@ -120,7 +117,7 @@ const Calendar = ({ id, businessName }) => {
     // =============================================
 
     const dateAppoimentsFiltered = () => {
-        return events.dates.filter(event => event.date == value.getDate() + "/" + (value.getMonth() + 1) + "/" + value.getFullYear());
+        return events.dates.filter(event => event.date === value.getDate() + "/" + (value.getMonth() + 1) + "/" + value.getFullYear());
     }
 
     const hours = [
@@ -142,12 +139,12 @@ const Calendar = ({ id, businessName }) => {
     useEffect(() => {
         const getResult = async () => {
             //gets all events of business
-            await axios.post('http://localhost:5015/api/calender/get-events', { businessID: id }).
-                then((res) => setEvents(res.data)).
-                catch((err) => console.log(err));
+            await axios.post('http://localhost:5015/api/calender/get-events', { businessID: id })
+                .then((res) => setEvents(res.data))
+                .catch((err) => console.log(err));
         };
         getResult();
-    }, []);
+    }, [id]);
 
     //Add new event to calender
     const handleClick = async (e) => {
@@ -193,8 +190,9 @@ const Calendar = ({ id, businessName }) => {
 
         hours.map(i => {
             if (i.value === item) {
-                i.isChecked = isChecked;
+                return i.isChecked = isChecked;
             }
+            return null;
         });
     }
 
@@ -267,6 +265,7 @@ const Calendar = ({ id, businessName }) => {
                             if (obj.date === newValue.getDate() + "/" + (newValue.getMonth() + 1) + "/" + newValue.getFullYear()) {
                                 return obj.time;
                             }
+                            return null;
                         })
                         const addHoursFiltered = hours.filter(hour => !newFiltered.includes(hour.value) && !dateFiltered.includes(hour.value));
 
@@ -395,7 +394,7 @@ const Calendar = ({ id, businessName }) => {
                         <h1>Make appointment</h1>
                         <Card.Subtitle className="mb-2 text-muted">{value.getDate() + "/" + (value.getMonth() + 1) + "/" + value.getFullYear()}</Card.Subtitle>
                         <Card.Text>
-                            {filteredFreeEvents.length != 0 ?
+                            {filteredFreeEvents.length !== 0 ?
                                 <form onSubmit={handleClick}>
                                     <div id="recaptcha-container"></div>
                                     <div className="mb-3">

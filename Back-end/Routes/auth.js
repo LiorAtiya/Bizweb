@@ -8,7 +8,8 @@ const JWT_SECRET = "fdsfdsdcdswere()fdsfds32423fscdsf343fdfdfdfxasdggg"
 router.post('/register', async (req, res) => {
     const { firstname, lastname, username,
         email, password } = req.body;
-
+    
+    //Encrypt password
     const encrypedPassword = await bcrypt.hash(password, 10);
 
     try {
@@ -46,7 +47,7 @@ router.post('/login', async (req, res) => {
     }
     //Checks if the password match to encrypt password
     if (await bcrypt.compare(password, user.password)) {
-        const token = jwt.sign({ email: user.email }, JWT_SECRET);
+        jwt.sign({ email: user.email }, JWT_SECRET);
 
         if (res.status(201)) {
             return res.json(user);

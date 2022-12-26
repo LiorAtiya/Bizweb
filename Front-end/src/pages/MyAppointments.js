@@ -25,8 +25,8 @@ export default function MyAppointments() {
                                 console.log("Delete appointment from list of user");
                                 window.location.reload(false);
                             }
-                        }).
-                        catch((err) => console.log(err));
+                        })
+                        .catch((err) => console.log(err));
                 }
             })
 

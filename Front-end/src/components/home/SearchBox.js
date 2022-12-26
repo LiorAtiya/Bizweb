@@ -1,15 +1,19 @@
 import React from 'react';
+import '../../styles/SearchBox.css'
 
-const SearchBox = ({searchChange}) => {
+const SearchBox = ({ searchChange }) => {
     return (
-        <div>
-            <input 
-                className='pa3 ba b--green bg-lightest-blue'
-                type='search'
+
+        <form className="search">
+            <input
+                className="search__input"
+                type="text"
+                id="search"
                 placeholder='Quick search'
                 onChange={searchChange}
             />
-        </div>
+            <i className="fa-solid fa-magnifying-glass"></i>
+        </form>
     )
 }
 

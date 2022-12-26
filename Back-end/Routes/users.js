@@ -62,7 +62,7 @@ router.put("/:id/business", async (req, res) => {
         try {
             await User.findByIdAndUpdate({ _id: req.params.id }, { $push: { business: business } })
             const user = await User.findById(req.params.id);
-            console.log(user);
+            // console.log(user);
             res.status(200).json(user);
         } catch (err) {
             res.status(500).json(err);

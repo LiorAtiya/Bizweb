@@ -106,7 +106,7 @@ export default class BusinessProvider extends Component {
             tempBusiness = tempBusiness.filter(busi => busi.city === city);
         }
 
-        if (businessName != "") {
+        if (businessName !== "") {
             //filter by business name
             tempBusiness = tempBusiness.filter(
                 busi => busi.name.toLowerCase().includes(businessName.toLowerCase()));
