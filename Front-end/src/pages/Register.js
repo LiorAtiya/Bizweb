@@ -9,7 +9,7 @@ import {
   signInWithPhoneNumber 
 } from "firebase/auth";
 import axios from "axios";
-import { useHistory } from "react-router-dom";
+// import { useHistory } from "react-router-dom";
 
 const auth = getAuth(app)
 
@@ -19,7 +19,7 @@ export default function Register() {
   const username = useRef();
   const email = useRef();
   const password = useRef();
-  const history = useHistory();
+  // const history = useHistory();
 
   const otp = useRef();
   const [phone, setPhone] = useState("");

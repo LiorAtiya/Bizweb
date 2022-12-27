@@ -26,8 +26,8 @@ export const SignUpContainer = styled.div`
    transform: translateX(100%);
    opacity: 1;
    z-index: 5;
- ` 
- : null}
+ `
+    : null}
 `;
 
 
@@ -43,6 +43,18 @@ ${props => (props.signinIn !== true ? `transform: translateX(100%);` : null)}
 `;
 
 export const Form = styled.form`
+background-color: #ffffff;
+display: flex;
+align-items: center;
+justify-content: center;
+flex-direction: column;
+padding: 0 50px;
+height: 100%;
+text-align: center;
+`;
+
+export const NewBusinessForm = styled.form`
+margin-top: 20px;
 background-color: #ffffff;
 display: flex;
 align-items: center;
@@ -106,7 +118,7 @@ overflow: hidden;
 transition: transform 0.6s ease-in-out;
 z-index: 100;
 ${props =>
- props.signinIn !== true ? `transform: translateX(-100%);` : null}
+    props.signinIn !== true ? `transform: translateX(-100%);` : null}
 `;
 
 export const Overlay = styled.div`

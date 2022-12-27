@@ -5,7 +5,7 @@ import NavbarComp from './components/NavbarComp';
 
 import Home from './pages/Home'
 import Login from './pages/Login'
-import Register from './pages/Register';
+// import Register from './pages/Register';
 import Error from './pages/Error';
 import Category from './pages/Category';
 import SingleBusiness from './pages/SingleBusiness'
@@ -34,9 +34,9 @@ export default function App() {
                         {/* {user ? <Redirect to='/' /> : <Login />} */}
                         <Login />
                     </Route>
-                    <Route exact path="/register">
+                    {/* <Route exact path="/register">
                         <Register />
-                    </Route>
+                    </Route> */}
                     <Route exact path="/newbusiness">
                         <NewBusiness />
                     </Route>
