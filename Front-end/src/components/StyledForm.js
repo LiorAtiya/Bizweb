@@ -65,12 +65,50 @@ height: 100%;
 text-align: center;
 `;
 
+export const NewBusinessContainer = styled.form`
+background-color: #fff;
+border-radius: 10px;
+box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+position: relative;
+overflow: hidden;
+width: 550px;
+max-width: 100%;
+min-height: 650px;
+margin: auto;
+margin-top: 6.5%;
+margin-bottom: 20px;
+padding-bottom: 20px;
+`;
+
 export const Title = styled.h1`
 font-weight: bold;
 margin: 0;
 `;
 
 export const Input = styled.input`
+background-color: #eee;
+border: none;
+padding: 12px 15px;
+margin: 8px 0;
+width: 100%;
+`;
+
+export const Select = styled.select`
+background-color: #eee;
+border: none;
+padding: 12px 15px;
+margin: 8px 0;
+width: 450px;
+`;
+
+export const SelectOfTime = styled.select`
+background-color: #eee;
+border: none;
+padding: 12px 15px;
+width: 100%;
+`;
+
+export const TextArea = styled.textarea`
 background-color: #eee;
 border: none;
 padding: 12px 15px;
@@ -97,6 +135,36 @@ export const Button = styled.button`
        outline: none;
    }
 `;
+
+export const ButtonPic = styled.button`
+   border-radius: 25px;
+   margin-bottom: 20px;
+   background-color: #ff2b2b;
+   border: white;
+   height: 50px;
+   color: #ffffff;
+   font-size: 12px;
+   font-weight: bold;
+   padding: 12px 45px;
+   letter-spacing: 1px;
+   text-transform: uppercase;
+   transition: transform 80ms ease-in;
+   &:active{
+       transform: scale(0.95);
+   }
+   &:focus {
+       outline: none;
+   }
+`;
+
+export const Pic = styled.div`
+position: relative;
+width: 200px;
+height: 200px;
+margin-top: 50px;
+margin: auto;
+`
+
 export const GhostButton = styled(Button)`
 background-color: transparent;
 border-color: #ffffff;

@@ -1,8 +1,9 @@
 import React, { useContext } from 'react'
 // import defaultBcg from "../images/defaultImg.png"
-import { Link } from 'react-router-dom'
+// import { Link } from 'react-router-dom'
 import Banner from '../components/Banner'
 import StyledHero from '../components/StyledHero'
+import '../styles/SingleBusiness.css'
 
 //Gallery
 import { GalleryCard } from '../components/singleBusiness/GalleryCard'
@@ -32,9 +33,9 @@ export default function SingleBusiness() {
         <>
           <StyledHero img={business.backgroundPicture}>
             <Banner title={`${business.name}`}>
-              <Link to='/' className='btn-primary'>
+              {/* <Link to='/' className='btn-primary'>
                 Back to home
-              </Link>
+              </Link> */}
             </Banner>
           </StyledHero>
           <section className="project" id="project">
@@ -44,7 +45,7 @@ export default function SingleBusiness() {
                   <TrackVisibility>
                     {({ isVisible }) =>
                       <div className={isVisible ? "animate__animated animate__fadeIn" : ""}>
-                        <h1>Description</h1>
+                        <h1 className='single-business-container'>Description</h1>
                         <p>{business.description}</p>
                         <Tab.Container id="projects-tabs" defaultActiveKey="first">
                           <Nav variant="pills" className="nav-pills mb-5 justify-content-center align-items-center" id="pills-tab">
@@ -65,7 +66,7 @@ export default function SingleBusiness() {
                             <Tab.Pane eventKey="first">
                               <GalleryCard id={business._id} name={name}/>
                             </Tab.Pane>
-                            <Tab.Pane eventKey="second">
+                            <Tab.Pane eventKey="second" className='calender-tab'>
                               <Calender id={business._id} businessName={name}/>
                             </Tab.Pane>
                             <Tab.Pane eventKey="third">

@@ -1,5 +1,10 @@
 .css-1eurbeq-MuiPickersToolbar-root-MuiDatePickerToolbar-root {
-    background-color: red !important;
+    background: #ff416c !important;
+    background: -webkit-linear-gradient(to right, #ff4b2b, #ff416c)!important;
+    background: linear-gradient(to right, #ff4b2b, #ff416c)!important;
+    background-repeat: no-repeat!important;
+    /* background-color: red !important; */
+    color: #f4f4f4;
 }
 
 .css-u0soqy-MuiPickerStaticWrapper-root {
@@ -29,11 +34,17 @@
 }
 
 .css-bkrceb-MuiButtonBase-root-MuiPickersDay-root.Mui-selected {
-    background-color: red !important;
+    background: #ff416c !important;
+    background: -webkit-linear-gradient(to right, #ff4b2b, #ff416c)!important;
+    background: linear-gradient(to right, #ff4b2b, #ff416c)!important;
+    background-repeat: no-repeat!important;
 }
 
 .css-195y93z-MuiButtonBase-root-MuiPickersDay-root.Mui-selected {
-    background-color: red !important;
+    background: #ff416c !important;
+    background: -webkit-linear-gradient(to right, #ff4b2b, #ff416c)!important;
+    background: linear-gradient(to right, #ff4b2b, #ff416c)!important;
+    background-repeat: no-repeat!important;
     color: black !important;
 }
 
@@ -49,4 +60,17 @@
 .css-1n2mv2k {
     background-color: #f4f4f4;
     margin-bottom: 1rem;
+}
+
+.header-appointment {
+    margin-top: -5px;
+}
+
+.admin-container{
+    display: flex;
+    margin: auto;
+}
+
+.btn-admin {
+    margin-right: 10px;
 }

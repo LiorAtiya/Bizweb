@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import Hero from '../components/Hero';
+// import Hero from '../components/Hero';
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import cities from '../database/cities'
@@ -77,37 +77,68 @@ export default function NewBusiness() {
         }
     }
 
-    const [signIn, toggle] = useState(true);
+    // const [signIn, toggle] = useState(true);
 
     return (
-        <Components.Container>
+        <Components.NewBusinessContainer>
 
             <Components.NewBusinessForm onSubmit={handleClick}>
                 <Components.Title>Open a new business</Components.Title>
-                <br/>
+                <br />
                 <div className="mb-3">
                     <label>
-                        Category of your business:<br/>
-                        <select className="form-control" ref={category}>
+                        <b>Category of your business:</b><br />
+                        <Components.Select ref={category}>
                             <option value="Barbershop">Barbershop</option>
                             <option value="Nail Polish">Nail Polish</option>
                             <option value="Restaurants">Restaurants</option>
                             <option value="Renovations">Renovations</option>
-                        </select>
+                        </Components.Select>
                     </label>
                 </div>
 
-                <Components.Input type='email' placeholder='Email'
-
+                <Components.Input type='text' placeholder='Business Name'
+                    required ref={name}
                 />
-                <Components.Input type='password' placeholder='Password'
-
+                <Components.TextArea type='textarea' placeholder='Description'
+                    required ref={description}
                 />
-                <Components.Anchor href='#'>Forgot your password?</Components.Anchor>
-                <Components.Button type="submit">Login</Components.Button>
+
+                <div className="mb-3">
+                    <label>
+                        <b>City:</b><br></br>
+                        <Components.Select ref={city}>
+                            {citiesMap}
+                        </Components.Select>
+                    </label>
+                </div>
+
+                <Components.Input type='text' placeholder='Address'
+                    required ref={address}
+                />
+
+                <Components.Input type='number' placeholder='Phone'
+                    required ref={phone}
+                />
+
+                <div className="mb-3">
+                    <Components.ButtonPic id='upload-widget' className='cloudinary-button' onClick={() => handleOpenWidget()}>
+                        Choose background image
+                    </Components.ButtonPic>
+                    {
+                        backgroundPicture !== "" ?
+                            <Components.Pic>
+                                <img src={backgroundPicture} alt="backPic" />
+                            </Components.Pic>
+                            :
+                            null
+                    }
+                </div>
+
+                <Components.Button type="submit">Create</Components.Button>
             </Components.NewBusinessForm>
 
-        </Components.Container>
+        </Components.NewBusinessContainer>
     )
 
     // return (

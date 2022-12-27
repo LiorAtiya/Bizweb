@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import app from '../../database/firebase_config'
 import '../../styles/Calender.css'
+import * as Components from '../StyledForm'
 
 import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 
@@ -302,13 +303,15 @@ const Calendar = ({ id, businessName }) => {
                             {
                                 isAdmin() ?
                                     <>
-                                        <Button variant="btn btn-warning" onClick={handleShow}>
-                                            Add available hours
+                                        <div className='admin-container'>
+                                        <Button className='btn-admin' variant="btn btn-warning" onClick={handleShow}>
+                                            <b>Add available hours</b>
                                         </Button>
                                         <br></br>
                                         <Button variant="btn btn-warning" onClick={handleShow2}>
-                                            List of appointments
+                                            <b>List of appointments</b>
                                         </Button>
+                                        </div>
                                         <hr></hr>
                                     </>
                                     :
@@ -347,6 +350,7 @@ const Calendar = ({ id, businessName }) => {
                                     <Button variant="btn btn-success" onClick={addHours}>Confirm</Button>
                                 </Modal.Footer>
                             </Modal>
+                            
                             <Modal
                                 show={show2}
                                 onHide={handleClose2}
@@ -391,85 +395,68 @@ const Calendar = ({ id, businessName }) => {
                             </Modal>
 
                         </div>
-                        <h1>Make appointment</h1>
+                        <h1 className='header-appointment'><b>Make appointment</b></h1>
                         <Card.Subtitle className="mb-2 text-muted">{value.getDate() + "/" + (value.getMonth() + 1) + "/" + value.getFullYear()}</Card.Subtitle>
                         <Card.Text>
                             {filteredFreeEvents.length !== 0 ?
                                 <form onSubmit={handleClick}>
                                     <div id="recaptcha-container"></div>
+
                                     <div className="mb-3">
                                         <label>
-                                            Choose an available time:<br></br>
-                                            <select style={{ display: "inline" }} className="form-control" ref={time}>
+                                            <b>Choose an available time:</b><br />
+                                            <Components.SelectOfTime ref={time}>
                                                 {filteredFreeEvents
                                                     // filteredFreeEvents :
                                                     // <option value={0} key={0}>No available hours on this day</option>
                                                 }
-                                            </select>
+                                            </Components.SelectOfTime>
                                         </label>
                                     </div>
 
-                                    <div className="mb-3">
-                                        <label>Client name</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            placeholder="Enter name business"
-                                            required
-                                            ref={name}
-                                        />
-                                    </div>
+                                    <Components.Input type='text' placeholder='Client name'
+                                        required ref={name}
+                                    />
 
-                                    <div className="mb-3">
-                                        <label>Phone number</label>
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            placeholder="Enter mobile"
+                                    <div>
+                                        <Components.Input type='number' placeholder='Phone'
+                                            required
                                             onChange={(e) => changeMobile(e)}
                                         />
                                         {verifyButton ?
-                                            <input
+                                            <Components.Button
                                                 type="button"
-                                                value={verified ? "Verified" : "Verify"}
                                                 onClick={onSignInSubmit}
-                                                style={{ backgroundColor: "#0163d2", width: "100%", padding: 8, color: "white", border: "none" }} />
+                                            >
+                                                {verified ? "Verified" : "Verify"}
+                                            </Components.Button>
                                             : null}
                                     </div>
 
                                     {verifyOtp ?
-                                        <div className="mb-3">
-                                            <label>OTP</label>
-                                            <input
+                                        <>
+                                            <Components.Input
                                                 type="number"
-                                                className="form-control"
                                                 placeholder="Enter OTP"
                                                 ref={otp}
                                             />
-                                            <input
+                                            <Components.Button
                                                 type="button"
                                                 value="OTP"
                                                 onClick={verifyCode}
-                                                style={{ backgroundColor: "#0163d2", width: "100%", padding: 8, color: "white", border: "none" }} />
+                                            >
+                                                Confirm
+                                            </Components.Button>
+                                        </>
+                                        :
+                                        null}
 
-                                        </div> : null}
+                                    <Components.TextArea type='textarea' placeholder='Additional Comments'
+                                        required ref={comments}
+                                    />
 
-                                    <div className="mb-3">
-                                        <label>Additional Comments</label>
-                                        <textarea
-                                            placeholder="Description of the business"
-                                            className="form-control"
-                                            id="message"
-                                            name="message"
-                                            ref={comments}
-                                        />
-                                    </div>
+                                    <Components.Button type="submit">Submit</Components.Button>
 
-                                    <div className="d-grid">
-                                        <button type="submit" className="btn btn-success">
-                                            Submit
-                                        </button>
-                                    </div>
                                 </form>
                                 :
                                 <h3>No available hours on this day</h3>
@@ -478,7 +465,7 @@ const Calendar = ({ id, businessName }) => {
                     </Card.Body>
                 </Card>
                 : null}
-        </div>
+        </div >
     );
 };
 

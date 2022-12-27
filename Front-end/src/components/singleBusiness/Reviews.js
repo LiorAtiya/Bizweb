@@ -2,6 +2,12 @@ import React, { useState, useEffect, useRef } from 'react'
 import { FaStar } from "react-icons/fa"
 import Toast from 'react-bootstrap/Toast';
 import axios from 'axios';
+import Card from 'react-bootstrap/Card';
+import '../../styles/Reviews.css'
+import * as Components from '../StyledForm'
+
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 const colors = {
     orange: "#FFBA5A",
@@ -35,9 +41,15 @@ export default function Reviews({ id }) {
     const stars = Array(5).fill(0);
     const [reviewList, setReviewList] = useState([])
     const [currentValue, setCurrentValue] = useState(0);
-    // const [name, setName] = useState('');
-    // const [review, setReview] = useState('');
     const [hoverValue, setHoverValue] = useState(undefined);
+    const [reviewID,setReviewID] = useState("");
+
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = (id) => {
+        setReviewID(id);
+        setShow(true);
+    }
 
     const name = useRef();
     const review = useRef();
@@ -88,91 +100,101 @@ export default function Reviews({ id }) {
         window.location.reload(false);
     }
 
-    const removeReview = async (review_id) => {
+    const removeReview = async () => {
         await axios.delete(`http://localhost:5015/api/business/${id}/reviews`,
-            { data: { id: review_id } });
+            { data: { id: reviewID } });
         window.location.reload(false);
     }
 
     return (
         <div style={styles.container}>
-            <h2>Star Rating</h2>
-            <div style={styles.stars}>
-                {stars.map((_, index) => {
-                    return (
-                        <FaStar
-                            key={index}
-                            size={24}
-                            style={{
-                                marginRight: 10,
-                                cursor: 'pointer'
-                            }}
-                            color={(hoverValue || currentValue) > index ? colors.orange : colors.grey}
-                            onClick={() => handleClick(index + 1)}
-                            onMouseOver={() => handleMouseOver(index + 1)}
-                            onMouseLeave={handleMouseLeave}
-                        />
-                    )
-                })}
-            </div>
-            <br></br>
-            <form onSubmit={addReview}>
-                <div>
-                    <input
-                        placeholder='Your name'
-                        style={styles.button}
-                        required
-                        ref={name}
-                    />
-                </div>
-                <div>
-                    <textarea
-                        placeholder="What's your feedback"
-                        style={styles.textarea}
-                        id="message"
-                        name="message"
-                        required
-                        ref={review}
-                    />
-                </div>
-                <button type="submit" style={styles.button}>Submit</button>
-            </form>
+            <Card className='card-container'>
+                <Card.Header><h2>Star Rating</h2></Card.Header>
+                <Card.Header>
+
+                    <div style={styles.stars}>
+                        {stars.map((_, index) => {
+                            return (
+                                <FaStar
+                                    key={index}
+                                    size={24}
+                                    style={{
+                                        marginRight: 10,
+                                        cursor: 'pointer'
+                                    }}
+                                    color={(hoverValue || currentValue) > index ? colors.orange : colors.grey}
+                                    onClick={() => handleClick(index + 1)}
+                                    onMouseOver={() => handleMouseOver(index + 1)}
+                                    onMouseLeave={handleMouseLeave}
+                                />
+                            )
+                        })}
+                    </div>
+                </Card.Header>
+
+                <Card.Body>
+                    <Card.Text className='card-text'>
+                        <form onSubmit={addReview}>
+
+                            <Components.Input type='text' placeholder='Your name'
+                                required ref={name}
+                            />
+
+                            <Components.TextArea type='textarea' placeholder="What's your feedback"
+                                required ref={review}
+                            />
+
+                            <Components.Button type="submit">Submit</Components.Button>
+                        </form>
+                    </Card.Text>
+                </Card.Body>
+            </Card>
+
+            <Modal
+                show={show}
+                onHide={handleClose}
+                backdrop="static"
+                keyboard={false}
+            >
+                <Modal.Header closeButton>
+                    <h5>Are you sure you want to delete?</h5>
+                </Modal.Header>
+
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        No
+                    </Button>
+                    <Button variant="btn btn-success" onClick={removeReview}>Yes</Button>
+                </Modal.Footer>
+            </Modal>
+
             <div>
                 <br></br>
+                <h3 style={{ textAlign: "center", color: "white" }}><b>Feedbacks:</b></h3>
                 {
                     reviewList.map((item, i) => {
                         return (
                             <>
                                 {
                                     isAdmin() ?
-                                        <Toast onClose={() => removeReview(item.id)}>
+                                        <Toast className='toast-box' onClose={() => {
+                                            handleShow(item.id);
+                                        } 
+                                        }>
                                             <Toast.Header>
                                                 {/* <img src="holder.js/20x20?text=/%20" className="rounded me-2" alt="" /> */}
-                                                <strong className="me-auto">{item.name}</strong>
-                                                <small>{item.stars}</small>
-                                                <FaStar
-                                                    key={i}
-                                                    style={{
-                                                        marginLeft: '5px',
-                                                        cursor: 'pointer'
-                                                    }}
-                                                />
+                                                <div className="me-auto">{item.name}</div>
+                                                <div className="stars">{item.stars} ⭐</div>
                                             </Toast.Header>
                                             <Toast.Body>{item.review}</Toast.Body>
                                         </Toast>
                                         :
-                                        <Toast onClose={() => alert('Only admin can remove review')}>
-                                            <Toast.Header>
+                                        <Toast className='toast-box'>
+                                            <Toast.Header closeButton={false}>
                                                 {/* <img src="holder.js/20x20?text=/%20" className="rounded me-2" alt="" /> */}
                                                 <strong className="me-auto">{item.name}</strong>
-                                                <small>{item.stars}</small>
-                                                <FaStar
-                                                    key={i}
-                                                    style={{
-                                                        marginLeft: '5px',
-                                                        cursor: 'pointer'
-                                                    }}
-                                                />
+                                                <div className="stars">{item.stars} ⭐</div>
+
                                             </Toast.Header>
                                             <Toast.Body>{item.review}</Toast.Body>
                                         </Toast>

@@ -45,14 +45,14 @@ export default function BusinessFilter({ business }) {
       <form className='filter-form'>
 
         <div className='form-group'>
-          <label htmlFor='type'>Filter by city</label>
+          <label htmlFor='type'><b>Filter by city</b></label>
           <select name='city' id='city' value={city} className='form-control' onChange={handleChange}>
             {types}
           </select>
         </div>
 
         <div className='form-group'>
-            <label htmlFor='type'>Filter by name</label>
+            <label htmlFor='type'><b>Filter by name</b></label>
             <input 
                 name='businessName'
                 type='search'

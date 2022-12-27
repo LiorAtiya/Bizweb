@@ -47,10 +47,10 @@
   .card-category-container:hover img {
     opacity: 0.3;
   }
-
+/* 
   .card-category-container:hover .room-link {
     transform: translate(-50%, -50%) scale(1);
-  }
+  } */
 
   .text-on-image {
       position: absolute;

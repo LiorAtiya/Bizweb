@@ -3,7 +3,6 @@ import { Col, Row } from "react-bootstrap";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import axios from 'axios';
-import '../../styles/Gallery.css'
 
 export const GalleryCard = ({ id, name }) => {
 
@@ -110,7 +109,7 @@ export const GalleryCard = ({ id, name }) => {
         isAdmin() ?
           <>
             <Button variant="btn btn-warning" onClick={handleShow}>
-              Admin Permissions
+              <b>Admin Permissions</b>
             </Button>
             <hr></hr>
           </>
@@ -168,9 +167,6 @@ export const GalleryCard = ({ id, name }) => {
       <Row>
         {
           data.map((singleData, i) => {
-            // const base64String = btoa(
-            //   String.fromCharCode(...new Uint8Array(singleData.img.data.data))
-            // );
             return (
               <Col size={12} sm={6} md={4}>
                 <div className="proj-imgbx">
@@ -182,14 +178,9 @@ export const GalleryCard = ({ id, name }) => {
                       :
                       null
                   }
-                  {/* <div className="proj-txtx">
-                    <h4>{"title"}</h4>
-                    <span>{"description"}</span>
-                  </div> */}
                 </div>
               </Col>
             )
-            // <GalleryCard src={`data:image/png;base64,${base64String}`} key={i} />
           })
         }
       </Row>
