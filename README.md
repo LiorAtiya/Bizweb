@@ -35,11 +35,13 @@ Run the project
 
 <span>
   
-  <img src="https://user-images.githubusercontent.com/68508896/192110139-17516596-8625-46be-8f8a-1f75f5f11a50.png" title="Java Script" alt="js" height="80"/>
-  <img src="https://user-images.githubusercontent.com/68508896/192110164-3cc0735d-a0b6-4b74-a3cc-dd29f730b34b.png" title="CSS" alt="css" height="80"/>
-  <img src="https://user-images.githubusercontent.com/68508896/192110177-06b7c17a-0317-40d7-9ba2-d5f1d8f708dc.png" title="Html" alt="html" height="80"/>
+<img src="https://user-images.githubusercontent.com/68508896/192110139-17516596-8625-46be-8f8a-1f75f5f11a50.png" title="Java Script" alt="js" height="80"/>
+<img src="https://user-images.githubusercontent.com/68508896/192110164-3cc0735d-a0b6-4b74-a3cc-dd29f730b34b.png" title="CSS" alt="css" height="80"/>
+<img src="https://user-images.githubusercontent.com/68508896/192110177-06b7c17a-0317-40d7-9ba2-d5f1d8f708dc.png" title="Html" alt="html" height="80"/>
   
-  <img src="https://user-images.githubusercontent.com/68508896/192110208-46336dc4-59cf-486a-8cab-21d0990aee04.png" title="NodeJS" alt="nodejs" height="80"/>
+<img src="https://user-images.githubusercontent.com/68508896/192110208-46336dc4-59cf-486a-8cab-21d0990aee04.png" title="NodeJS" alt="nodejs" height="80"/>
+  
+ <img src="https://user-images.githubusercontent.com/68508896/192110399-78e8e720-449d-433e-aed0-9b48257cbb87.png" title="ExpressJS" alt="expressjs" height="80"/>
   
   <img src="https://user-images.githubusercontent.com/22147116/210971066-a21c5364-df69-4ec4-8b02-1ed5545cd9a0.png" title="React" alt="react" height="80"/>
   
@@ -47,7 +49,8 @@ Run the project
   
 <img src="https://user-images.githubusercontent.com/22147116/210971632-38af254d-edcb-4f1f-a049-f58964f6f103.png" title="Firebase" alt="Firebase" height="80" width="170"/>  
     
+<img src="https://user-images.githubusercontent.com/22147116/210978957-130ddae8-8818-43a5-9ab4-1db8fdd8cfc4.png" title="Cloudinary" alt="cloudinary" height="80" width="170"/>
+
   <img src="https://user-images.githubusercontent.com/68508896/192110229-e29d4f50-b251-48ef-85d4-4363fbb7d993.png" title="Bing Maps" alt="bingmaps" height="80"/>
-  <img src="https://user-images.githubusercontent.com/68508896/192110399-78e8e720-449d-433e-aed0-9b48257cbb87.png" title="ExpressJS" alt="expressjs" height="80"/>
 
 </span>
