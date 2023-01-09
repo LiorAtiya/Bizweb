@@ -52,5 +52,7 @@ Run the project
 <img src="https://user-images.githubusercontent.com/22147116/210978957-130ddae8-8818-43a5-9ab4-1db8fdd8cfc4.png" title="Cloudinary" alt="cloudinary" height="80" width="170"/>
 
   <img src="https://user-images.githubusercontent.com/68508896/192110229-e29d4f50-b251-48ef-85d4-4363fbb7d993.png" title="Bing Maps" alt="bingmaps" height="80"/>
+  
+  <img src="https://user-images.githubusercontent.com/68508896/192123699-dac961cf-8f69-4d86-be87-b4939e5732aa.png" title="BigML" alt="expressjs" height="80"/>
 
 </span>
