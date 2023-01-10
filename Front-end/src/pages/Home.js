@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
+import axios from "axios";
+import { Link } from 'react-router-dom'
 import SearchBox from '../components/home/SearchBox';
-import '../App.css';
+import '../styles/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import categories from '../database/categories';
-import Hero from '../components/Hero';
-import Banner from '../components/Banner'
-import Services from '../components/home/Services';
+import Hero from '../components/general/Hero';
+import Banner from '../components/general/Banner'
+import Top5 from '../components/home/Top5';
+import AboutUs from '../components/home/AboutUs';
+
 import CategoryBusiness from '../components/home/CategoryBusiness'
 
 class Home extends Component {
@@ -13,19 +17,45 @@ class Home extends Component {
         super()
         this.state = {
             category: [],
+            user: [],
+            prediction: undefined,
             searchfield: ''
         }
     }
 
-    componentDidMount() {
-        this.setState({ category: categories })
-        // fetch('https://jsonplaceholder.typicode.com/users') // פונקציה לבקש בקשה מהשרת
-        // .then(response => response.json())
-        // .then(users => this.setState({ robots: users }));
+    async componentDidMount() {
+        this.setState({ category: categories });
+        const getUserData = JSON.parse(localStorage.getItem('token'));
+        this.setState({ user: getUserData });
+
+        const record = {
+            firstname: getUserData.firstname,
+            lastname: getUserData.lastname,
+            username: getUserData.username,
+            email: getUserData.email
+        }
+
+        await axios.post(`http://localhost:5015/api/users/${getUserData._id}/prediction`, record)
+        .then((res) => {
+            this.setState({prediction: res.data[0]})
+        })
+        .catch((err) => console.log(err));
     }
 
     onSearchChange = (event) => {
-        this.setState({ searchfield: event.target.value }) // לקחת את הערך שנכתב בחיפוש
+        this.setState({ searchfield: event.target.value })
+    }
+
+    handleClick = async () => {
+
+        // Train & Create new model in bigML
+        await axios.get(`http://localhost:5015/api/users/${this.state.user._id}/trainBigML`)
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((err) => console.log(err));
+        
+        
     }
 
     render() {
@@ -40,12 +70,27 @@ class Home extends Component {
                 <>
                     <Hero>
                         <Banner title="Facework" subtitle="Sample Site for any business">
-                            {/* <Link to='/register' className='btn-primary'>Register</Link> */}
-                            <SearchBox searchChange={this.onSearchChange} />
                         </Banner>
                     </Hero>
+                    <SearchBox searchChange={this.onSearchChange} />
+                    {
+                        this.state.user?
+                            this.state.prediction?
+                            <h6 className='predictBigml'>Maybe you are interested in
+                                <Link to={`/category/${this.state.prediction.toLowerCase()}`} onClick={this.handleClick}>
+                                <button className='btnPredictBigml'>{this.state.prediction}</button>
+                                </Link>
+                                ?
+                            </h6>
+                            :
+                            null
+                            :
+                            null
+                    }
                     <CategoryBusiness categories={filteredCategories} />
-                    <Services />
+                    <Top5 />
+                    <AboutUs />
+                    <br />
                 </>
             );
         }

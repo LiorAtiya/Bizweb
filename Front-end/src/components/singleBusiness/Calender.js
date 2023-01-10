@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
-import app from '../../database/firebase_config'
+import app from '../../context/firebase_config'
 import '../../styles/Calender.css'
-import * as Components from '../StyledForm'
+import * as Components from '../../styles/StyledForm'
 
 import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 
@@ -115,8 +115,9 @@ const Calendar = ({ id, businessName }) => {
         });
     }
 
-    // =============================================
+    // ==================End of OTP Verify ======================
 
+    //Filter of selected date
     const dateAppoimentsFiltered = () => {
         return events.dates.filter(event => event.date === value.getDate() + "/" + (value.getMonth() + 1) + "/" + value.getFullYear());
     }
@@ -151,7 +152,8 @@ const Calendar = ({ id, businessName }) => {
     const handleClick = async (e) => {
         e.preventDefault();
 
-        if (verified) {
+        //********* RETURN THIS*************** */
+        // if (verified) {
 
             const appointment = {
                 businessName: businessName,
@@ -162,10 +164,18 @@ const Calendar = ({ id, businessName }) => {
                 name: name.current.value,
                 phone: phone,
                 comments: comments.current.value,
+                userID: ""
             }
+
+            //Add user ID to appointment
+            if (getUserData) {
+                appointment.userID = getUserData._id;
+            }
+
             await axios.post('http://localhost:5015/api/calender/create-event', appointment);
             console.log("Added new event to calender");
 
+            //if user connected => Update in the personal profile the appointment
             if (getUserData) {
                 await axios.put(`http://localhost:5015/api/users/${getUserData._id}/newappointment`, appointment)
                     .then((res) => {
@@ -178,10 +188,11 @@ const Calendar = ({ id, businessName }) => {
             }
 
             window.location.reload(false);
-
-        } else {
-            alert("Please Verify Mobile");
-        }
+        
+        //*************** RETURN THIS */
+        // } else {
+        //     alert("Please Verify Mobile");
+        // }
     }
 
     //for chosen times to add
@@ -210,15 +221,35 @@ const Calendar = ({ id, businessName }) => {
 
             await axios.post('http://localhost:5015/api/calender/create-event', appointment)
         })
-        alert("Added more hours to calender")
+        // alert("Added more hours to calender")
         window.location.reload(false);
     }
 
-    const deleteEvent = async (t, name, phone, date) => {
-
+    const deleteEvent = async (userID, t, name, phone, date) => {
+        const appointment = {
+            businessID: id, 
+            date: date, 
+            time: t, 
+            name: name, 
+            phone: phone,
+            userID: userID
+        }
+        //Delete from calender
         await axios.delete('http://localhost:5015/api/calender/delete-event',
-            { data: { businessID: id, date: date, time: t, name: name, phone: phone } });
-        window.location.reload(false);
+        { data: appointment })
+        .then((res) => {
+
+            if (res.status !== 500 && res.data.userID) {
+                //Delete from list of appointment of user
+                axios.delete(`http://localhost:5015/api/users/${res.data.userID}/delete-appointment`,
+                { data: appointment });
+
+                console.log("Removed appointment from list of user");
+                window.location.reload(false);
+            }else {
+                window.location.reload(false);
+            }
+        })
     }
 
 
@@ -237,10 +268,10 @@ const Calendar = ({ id, businessName }) => {
                     onChange={(newValue) => {
                         setValue(newValue)
 
-                        //========== Filter for select free hour to appiment ========
+                        //========== Filter for select free hour to appointment ========
                         const filtered = events.availableHours.filter(event => event.date === newValue.getDate() + "/" + (newValue.getMonth() + 1) + "/" + newValue.getFullYear());
 
-                        // sort by name
+                        // sort by hours
                         filtered.sort((a, b) => {
                             const nameA = a.time // ignore upper and lowercase
                             const nameB = b.time // ignore upper and lowercase
@@ -254,6 +285,7 @@ const Calendar = ({ id, businessName }) => {
                             return 0;
                         });
 
+                        //list of available hours
                         let selectFreeEvent = filtered.map((item, index) => {
                             return <option value={item.time} key={index}>{item.time}</option>
                         })
@@ -378,7 +410,7 @@ const Calendar = ({ id, businessName }) => {
                                                                 <br />
                                                             </Card.Text>
                                                             <Button variant="btn btn-danger"
-                                                                onClick={() => deleteEvent(item.time, item.name, item.phone, value.getDate() + "/" + (value.getMonth() + 1) + "/" + value.getFullYear())}>Delete</Button>
+                                                                onClick={() => deleteEvent(item.userID, item.time, item.name, item.phone, value.getDate() + "/" + (value.getMonth() + 1) + "/" + value.getFullYear())}>Delete</Button>
                                                         </Card.Body>
                                                     </Card>
                                                     <br />

@@ -1,18 +1,16 @@
 import React, { useContext } from 'react'
-// import defaultBcg from "../images/defaultImg.png"
-// import { Link } from 'react-router-dom'
-import Banner from '../components/Banner'
-import StyledHero from '../components/StyledHero'
+import Banner from '../components/general/Banner'
+import StyledHero from '../styles/StyledHero'
 import '../styles/SingleBusiness.css'
 
 //Gallery
-import { GalleryCard } from '../components/singleBusiness/GalleryCard'
+import { Gallery } from '../components/singleBusiness/Gallery'
 import { Container, Row, Col, Tab, Nav } from "react-bootstrap";
 import TrackVisibility from 'react-on-screen';
 
 import Calender from '../components/singleBusiness/Calender'
 import Reviews from '../components/singleBusiness/Reviews'
-import Googlemap from '../components/singleBusiness/Googlemap'
+import Contact from '../components/singleBusiness/Contact'
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min'
 import { BusinessContext } from '../context/BusinessContext'
 
@@ -64,7 +62,7 @@ export default function SingleBusiness() {
                           </Nav>
                           <Tab.Content id="slideInUp" className={isVisible ? "animate__animated animate__slideInUp" : ""}>
                             <Tab.Pane eventKey="first">
-                              <GalleryCard id={business._id} name={name}/>
+                              <Gallery id={business._id} name={name}/>
                             </Tab.Pane>
                             <Tab.Pane eventKey="second" className='calender-tab'>
                               <Calender id={business._id} businessName={name}/>
@@ -73,7 +71,7 @@ export default function SingleBusiness() {
                               <Reviews id={business._id} />
                             </Tab.Pane>
                             <Tab.Pane eventKey="four">
-                              <Googlemap business={business} />
+                              <Contact business={business} />
                             </Tab.Pane>
                           </Tab.Content>
                         </Tab.Container>
