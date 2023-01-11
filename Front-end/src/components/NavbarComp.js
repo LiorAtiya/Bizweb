@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { Navbar, Nav, NavDropdown, Container } from 'react-bootstrap'
 import { Link } from "react-router-dom";
-// import { AuthContext } from '../context/AuthContext';
 import { useHistory } from "react-router-dom";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import "../styles/Navbar.css";
+// import { AuthContext } from '../context/AuthContext';
 
 export default function NavbarComp() {
 
@@ -25,37 +25,11 @@ export default function NavbarComp() {
     window.location.reload(false);
   }
 
-  // return (
-  //   <nav className='NavbarItems'>
-  //     <h1 className='logo'>Facework <i className='fa-solid fa-briefcase'></i></h1>
-  //     <ul className='nav-menu'>
-  //        <li>
-  //         <a href='index.html' className='nav-links'>
-  //           <i className='fa-solid fa-house-user'></i>
-  //           Home 
-  //         </a>
-  //        </li>
-  //        <li>
-  //         <a href='index.html' className='nav-links'>
-  //           <i className='fa-solid fa-house-user'></i>
-  //           Home 
-  //         </a>
-  //        </li>
-  //        <li>
-  //         <a href='index.html' className='nav-links'>
-  //           <i className='fa-solid fa-house-user'></i>
-  //           Home 
-  //         </a>
-  //        </li>
-  //     </ul>
-  //   </nav>
-  // )
-
   return (
     <div>
       <Navbar className='NavbarItems' collapseOnSelect expand="lg" bg="dark" variant="dark">
         <Container>
-          <Navbar.Brand className='logo' as={Link} to={"/"}>Facework
+          <Navbar.Brand className='logo' as={Link} to={"/"}><b>Facework</b>
           <i className='fa-solid fa-briefcase'></i>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
@@ -64,12 +38,13 @@ export default function NavbarComp() {
               {/* <Nav.Link as={Link} to={"/login"}>About us</Nav.Link> */}
             </Nav>
             <Nav className='nav-links'>
+              <Nav.Link className='QuichAppointment' as={Link} to={"/quickappointment"}><b>Quich Appointment</b></Nav.Link>
               <i className='fa-solid fa fa-user'></i>
               <NavDropdown title={getUserData ? `Hello ${getUserData.firstname}` : "Hello Guest"} id="collasible-nav-dropdown">
                 {
                   getUserData ? (
                     <>
-                      <NavDropdown.Item as={Link} to={"/myappointments"}>
+                      <NavDropdown.Item as={Link} to={`/myappointments/${getUserData._id}`}>
                         My appointments
                       </NavDropdown.Item>
                       <NavDropdown.Divider />
@@ -103,9 +78,7 @@ export default function NavbarComp() {
         <Modal.Header closeButton>
           <h5>Are you sure you want to log out?</h5>
         </Modal.Header>
-        {/* <Modal.Body>
 
-        </Modal.Body> */}
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             No

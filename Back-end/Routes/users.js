@@ -1,5 +1,8 @@
 const router = require('express').Router()
 const User = require('../Models/userDetails')
+const CategoryEntries = require('../Models/categoryEntries');
+const BigML = require("../Models/bml");
+
 const bcrypt = require('bcryptjs')
 
 //Update personal user details
@@ -43,32 +46,68 @@ router.put('/:id', async (req, res) => {
 //     }
 // })
 
-//get user
+//Get user
 router.get("/:id", async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
         //Not necessary
-        const { username, password, updatedAt, ...other } = user._doc
+        const { password, updatedAt, ...other } = user._doc
         res.status(200).json(other)
     } catch (err) {
         res.status(500).json(err)
     }
 })
 
-//Add new business
-router.put("/:id/business", async (req, res) => {
-    if (req.body.userID == req.params.id) {
-        const { business } = req.body;
-        try {
-            await User.findByIdAndUpdate({ _id: req.params.id }, { $push: { business: business } })
-            const user = await User.findById(req.params.id);
-            // console.log(user);
-            res.status(200).json(user);
-        } catch (err) {
-            res.status(500).json(err);
-        }
-    } else {
+//Add new record of category entry
+router.post("/:id/categoryEntry", async (req, res) => {
+    const { firstname, lastname, username,
+        email, category } = req.body;
+    
+    try {
+        //create new record
+        const newRecord = await CategoryEntries.create({
+            firstname,
+            lastname,
+            username,
+            email, 
+            category,
+        });
 
+        res.status(200).json(newRecord);
+    } catch (error) {
+        res.status(500).json(err);
+    }
+})
+
+router.get("/:id/trainBigML", async (req, res) => {
+    
+    try {
+        var recordsFound = await BigML.createModel();
+        res.status(200).json(recordsFound);
+    } catch (error) {
+        res.status(500).json(err);
+    }
+})
+
+router.post("/:id/prediction", async (req, res) => {
+
+    try {
+        var result = await BigML.predictAll(req.body);
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(500).json(err);
+    }
+})
+
+//Add new business to list of user
+router.put("/:id/business", async (req, res) => {
+    const { business } = req.body;
+    try {
+        await User.findByIdAndUpdate({ _id: req.params.id }, { $push: { business: business } })
+        const user = await User.findById(req.params.id);
+        res.status(200).json(user);
+    } catch (err) {
+        res.status(500).json(err);
     }
 })
 
@@ -94,10 +133,10 @@ router.put("/:id/newappointment", async (req, res) => {
 //Delete appointment
 router.delete("/:id/delete-appointment", async (req, res) => {
     try {
-        await User.findOneAndUpdate({ _id: req.params.id }, { $pull: { "myAppointments": { id: req.body.id } } });
+        await User.findOneAndUpdate({ _id: req.params.id }, { $pull: { "myAppointments": { id: req.body.id , date: req.body.date, time: req.body.time } } });
         console.log("Removed appointment");
         const user = await User.findOne({ '_id': req.params.id });
-        console.log(user);
+
         return res.json(user);
     } catch (err) {
         res.status(500).json(err);
