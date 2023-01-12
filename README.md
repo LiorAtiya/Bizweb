@@ -10,11 +10,12 @@ From the customers' perspective, the platform will allow them to search for serv
    
 | Home Page | Home Page |
 | ------------- | ------------- |
-| <p align="center"><img width="1493" alt="Screen Shot 2023-01-06 at 11 00 23" src="https://user-images.githubusercontent.com/22147116/210967948-d89b4814-5a7c-4fdc-b834-2d32b6455059.png"></p>  | <p align="center"><img width="1487" alt="Screen Shot 2023-01-06 at 11 00 43" src="https://user-images.githubusercontent.com/22147116/210968228-ddc3282b-8b9b-4890-b5b8-b102ae3572f9.png"></p>  |
+| <p align="center"><img width="1493" alt="Screen Shot 2023-01-06 at 11 00 23" src="https://user-images.githubusercontent.com/22147116/212024760-c50cdf4c-320f-4a88-bd7b-6bde141e5493.png"></p>  | <p align="center"><img width="1487" alt="Screen Shot 2023-01-06 at 11 00 43" src="https://user-images.githubusercontent.com/22147116/212024778-6b78e6e1-14c7-4ff6-93a4-6954f3e808cb.png"></p>  |
 
 | Login/Register Page | Business Site Page |
 | ------------- | ------------- |
-| <p align="center"><img width="1472" alt="Screen Shot 2023-01-06 at 11 01 30" src="https://user-images.githubusercontent.com/22147116/210968466-8575d723-1f10-4940-a089-c16fb0b2c0e1.png"></p>  |  <p align="center"><img width="1474" alt="Screen Shot 2023-01-06 at 11 03 24" src="https://user-images.githubusercontent.com/22147116/210968534-bc8d5c3b-89ea-43cd-b9b6-41e482145b6a.png"></p>  |
+| <p align="center"><img width="1472" alt="Screen Shot 2023-01-06 at 11 01 30" src="https://user-images.githubusercontent.com/22147116/210968466-8575d723-1f10-4940-a089-c16fb0b2c0e1.png"></p>  |  <p align="center"><img width="1474" alt="Screen Shot 2023-01-06 at 11 03 24" src="https://user-images.githubusercontent.com/22147116/212023918-4646414e-d75e-4ebd-93bc-442c6dfae531.png"></p>  |
+
 
 <h2>Getting Started</h2>
 
