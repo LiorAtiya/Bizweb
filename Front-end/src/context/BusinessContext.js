@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 // import items from "../database/data"
 // import categories from '../database/categories';
-import axious from 'axios'
+// import axious from 'axios'
+import ApiClient from '../api/ApiRoutes';
 
 const BusinessContext = React.createContext();
 
@@ -28,12 +29,15 @@ export default class BusinessProvider extends Component {
     async componentDidMount() {
 
         //get all business
-        await axious.get("http://localhost:5015/api/business")
+
+        // await axious.get("https://facework-server-production.up.railway.app/api/business")
+        ApiClient.getAllBusiness()
             .then((res) => {
                 if (res.status === 200) {
                     this.setState({ business: res.data, sortedBusiness: res.data })
                 }
             })
+            .catch((err) => console.log(err));
 
         // let typeBusiness = this.state.business.filter(busi => busi.category === true);
         // console.log("typeBusiness: "+ this.state.business[0].category);
@@ -67,6 +71,18 @@ export default class BusinessProvider extends Component {
         let tempBusiness = [...this.state.business];
         const business = tempBusiness.find(busi => busi.name === name);
         return business;
+    }
+
+    getAllBusinessOfUser = (idBusiness) => {
+        let tempBusiness = [...this.state.business];
+        let allBusiness = []
+        idBusiness.forEach(id => {
+            const business = tempBusiness.find(busi => busi._id === id);
+            if(business !== undefined) {
+                allBusiness.push(business)
+            }
+        });
+        return allBusiness;
     }
 
     handleChange = event => {
@@ -148,6 +164,7 @@ export default class BusinessProvider extends Component {
                 value={{
                     ...this.state,
                     getBusiness: this.getBusiness,
+                    getAllBusinessOfUser: this.getAllBusinessOfUser,
                     handleChange: this.handleChange,
                 }}>
                 {this.props.children}

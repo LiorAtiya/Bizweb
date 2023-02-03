@@ -3,8 +3,9 @@ const dotenv = require('dotenv');
 const mongoose = require("mongoose");
 const helmet = require('helmet');
 const morgan = require('morgan');
-const cors = require("cors");
 const bodyParser = require('body-parser')
+const cors = require("cors");
+
 const userRoute = require('./Routes/users')
 const authRoute = require('./Routes/auth')
 const businessRoute = require('./Routes/business')
@@ -13,8 +14,8 @@ const calenderRoute = require('./Routes/calander')
 dotenv.config();
 const app = express();
 
-//============ Connection to database ================   
-mongoose.set("strictQuery", true); 
+// Connection to database   
+mongoose.set("strictQuery", true);
 mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
 })
@@ -42,8 +43,9 @@ app.get('/', (req, res) => {
     res.send('Hello From server of Facework')
 })
 
+//Connection to server
 // const port = process.env.PORT || 5015;
-const port = 5015
+const port = 3015
 app.listen(port, () => {
     console.log("Server Started with http://localhost:" + port + "/");
 })

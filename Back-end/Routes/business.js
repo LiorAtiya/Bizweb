@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const Business = require('../Models/businessDetails');
 const Calender = require('../Models/calender');
+const User = require('../Models/userDetails')
+
 //Images cloud API
 const cloudinary = require('cloudinary');
 //Location API
@@ -26,19 +28,20 @@ router.post('/add', async (req, res) => {
         city, address, phone, backgroundPicture } = req.body;
 
     try {
-        //checks if the user already exist in database
+        //Checks if the user already exist in database
         const oldName = await Business.findOne({ 'name': name });
         if (oldName) {
             return res.send({ status: "Business Exists" });
         }
 
+        //Get coordination from given address
         const coordination = await geocode({
             address: address + " " + city,
             countryCode: "Israel",
             authentication,
         })
 
-        //create new business
+        //Create new business
         const business = await Business.create({
             category,
             name,
@@ -52,12 +55,13 @@ router.post('/add', async (req, res) => {
             backgroundPicture
         });
 
-        //Create new calender for business
+        //Create new calender for business (another schema)
         const event = await Calender.create({
             businessID: business._id,
             dates: [],
             availableHours: [],
         });
+
         console.log("Created new business")
         res.send(business);
     } catch (error) {
@@ -65,20 +69,43 @@ router.post('/add', async (req, res) => {
     }
 })
 
+//Delete business
+router.delete('/delete', async (req, res) => {
+    try {
+        const { businessID, userID } = req.body
+        //Delete business
+        await Business.deleteOne({ _id: businessID });
+        //Delete from list of user
+        await User.findOneAndUpdate({ _id: userID }, { $pull: { "business": businessID } });
+        //Delete calender of business
+        await Calender.deleteOne({ businessID: businessID });
+
+        res.status(200).json('business has been removed')
+    } catch (err) {
+        return res.status(500).json(err);
+    }
+})
+
 //Update info of business
 router.put('/:id', async (req, res) => {
-    if (req.body.userId == req.params.id) {
-        try {
-            //NEED TO CHECK WHY ITS REPLACE BODY INSTEAD UPDATE
-            const user = await Business.findByIdAndUpdate(req.params.id, {
-                $set: req.body
-            });
-            res.status(200).json('business has been updated')
-        } catch (err) {
-            return res.status(500).json(err);
-        }
-    } else {
-        return res.status(403).json('You can update only your business');
+
+    //Get coordination from given address
+    const coordination = await geocode({
+        address: req.body.address + " " + req.body.city,
+        countryCode: "Israel",
+        authentication,
+    })
+    
+    try {
+        const user = await Business.findByIdAndUpdate(req.params.id, {
+            $set: req.body
+        });
+
+        await Business.findByIdAndUpdate(req.params.id, { coordination: coordination.candidates[0] });
+
+        res.status(200).json('business has been updated')
+    } catch (err) {
+        return res.status(500).json(err);
     }
 })
 
@@ -99,7 +126,7 @@ router.get("/:id", async (req, res) => {
 router.get("/", async (req, res) => {
     try {
         const allBusiness = await Business.find({ type: "name" });
-        console.log('Get all business')
+        console.log("\u001b[35m" + 'Get all business' + "\u001b[0m");
         res.status(200).json(allBusiness);
     } catch (err) {
         res.status(500).json(err)
@@ -137,7 +164,7 @@ router.get("/:id/reviews", async (req, res) => {
     try {
         const user = await Business.findById(req.params.id);
         res.status(200).json(user.reviews)
-        console.log("Get all reviews");
+        console.log("\u001b[35m" + "Get all reviews" + "\u001b[0m");
     } catch (err) {
         res.status(500).json(err);
     }
@@ -174,7 +201,7 @@ router.get("/:id/gallery", async (req, res) => {
     try {
         const user = await Business.findById(req.params.id);
         res.status(200).json(user.gallery)
-        console.log("Get gallery");
+        console.log("\u001b[35m" + "Get gallery" + "\u001b[0m");
     } catch (err) {
         res.status(500).json(err);
     }
@@ -238,12 +265,12 @@ router.post("/home/quickappointment", async (req, res) => {
             return allCalenders.find(item => item.businessID === busi._id.toString());
         });
 
-        // Get current time
+        // Get current time (+2 for server of railway.app)
         let min, hours, currentTime;
-        if (new Date().getHours() < 10) {
-            hours = '0' + new Date().getHours()
+        if ((new Date().getHours() + 2) < 10) {
+            hours = '0' + (new Date().getHours() + 2)
         } else {
-            hours = new Date().getHours()
+            hours = (new Date().getHours() + 2)
         }
         if (new Date().getMinutes() < 10) {
             min = '0' + new Date().getMinutes()
@@ -252,27 +279,51 @@ router.post("/home/quickappointment", async (req, res) => {
         }
         currentTime = hours + ":" + min;
 
-        //Parse to int
+        //Parse time to int
         currentTime = currentTime.split(':').reduce(function (seconds, v) {
             return + v + seconds * 60;
         }, 0) / 60;
 
+
         //Get current date
         let currentDate = new Date().getDate() + "/" + (new Date().getMonth() + 1) + "/" + new Date().getFullYear()
+
+        currentDate = parseInt(currentDate.split('/').reduce(function (first, second) {
+            return second + first;
+        }, ""));
 
         let earliest = [];
         filteredCalendersBusiness.forEach(calender => {
             calender.availableHours.forEach(hour => {
-    
+
+                //Parse time to int
                 let availableHour = hour.time.split(':').reduce(function (seconds, v) {
                     return + v + seconds * 60;
                 }, 0) / 60;
 
-                if ((hour.date === currentDate) && (availableHour - currentTime > 0)) {
+                //Parse date to int
+                let parseDate = parseInt(hour.date.split('/').reduce(function (first, second) {
+                    return second + first;
+                }, ""));
+
+                //Checks that the date or time has not exceeded the current time
+                if ((parseDate > currentDate) ||
+                    ((parseDate === currentDate) && (availableHour - currentTime > 0))) {
+
+                    let earliestDate;
+
+                    if (earliest.length != 0) {
+                        earliestDate = parseInt(earliest[1].date.split('/').reduce(function (first, second) {
+                            return second + first;
+                        }, ""));
+                    }
+
                     if (earliest.length === 0) {
                         const tempEarliest = [calender, hour];
                         earliest = tempEarliest;
-                    } else {
+
+                    } else if ((earliestDate - currentDate) >= (parseDate - currentDate)) //Check earliest date
+                    {
                         let earliestTime = earliest[1].time.split(':').reduce(function (seconds, v) {
                             return + v + seconds * 60;
                         }, 0) / 60;

@@ -1,8 +1,9 @@
 import React, { useRef, useState } from 'react'
-import axios from "axios";
+// import axios from "axios";
 import { useHistory } from "react-router-dom";
 import cities from '../database/cities'
 import * as Components from '../styles/StyledForm';
+import ApiClient from '../api/ApiRoutes';
 
 export default function NewBusiness() {
     const category = useRef("");
@@ -47,39 +48,39 @@ export default function NewBusiness() {
             phone: phone.current.value,
             backgroundPicture: backgroundPicture,
         }
-        try {
-            //send request to server to add new business
-            await axios.post("http://localhost:5015/api/business/add", business)
-                .then((res) => {
-                    console.log(res);
-                    if (res.status === 200) {
-                        //add id of business to list of business of user
-                        const businessID = res.data._id;
-                        const getUserData = JSON.parse(localStorage.getItem('token'));
-                        const business = {
-                            userID: getUserData._id,
-                            business: businessID
-                        }
-                        axios.put(`http://localhost:5015/api/users/${getUserData._id}/business`, business)
-                            .then((res) => {
-                                window.localStorage.removeItem('token');
-                                window.localStorage.setItem("token", JSON.stringify(res.data));
 
-                                history.push('/');
-                                window.location.reload(false);
-                            });
-
+        //send request to server to add new business
+        ApiClient.addNewBusiness(business)
+            // await axios.post("https://facework-server-production.up.railway.app/api/business/add", business)
+            .then((res) => {
+                console.log(res);
+                if (res.status === 200) {
+                    //add id of business to list of business of user
+                    const businessID = res.data._id;
+                    const getUserData = JSON.parse(localStorage.getItem('token'));
+                    const business = {
+                        userID: getUserData._id,
+                        business: businessID
                     }
-                })
-        } catch (err) {
-            console.log(err);
-        }
+                    
+                    ApiClient.addBusinessToUser(getUserData._id,business)
+                    // axios.put(`https://facework-server-production.up.railway.app/api/users/${getUserData._id}/business`, business)
+                        .then((res) => {
+                            window.localStorage.removeItem('token');
+                            window.localStorage.setItem("token", JSON.stringify(res.data));
+
+                            history.push('/');
+                            window.location.reload(false);
+                        }).catch((err) => console.log(err));
+
+                }
+            }).catch((err) => console.log(err));
     }
 
     return (
         <Components.NewBusinessContainer>
 
-            <Components.NewBusinessForm onSubmit={handleClick}>
+            <Components.NewBusinessForm>
                 <Components.Title>Open a new business</Components.Title>
                 <br />
                 <div className="mb-3">
@@ -89,7 +90,10 @@ export default function NewBusiness() {
                             <option value="Barbershop">Barbershop</option>
                             <option value="Nail Polish">Nail Polish</option>
                             <option value="Restaurants">Restaurants</option>
-                            <option value="Renovations">Renovations</option>
+                            <option value="Professionals">Professionals</option>
+                            <option value="Personal Trainers">Personal Trainers</option>
+                            <option value="Private Teachers">Private Teachers</option>
+
                         </Components.Select>
                     </label>
                 </div>
@@ -119,7 +123,7 @@ export default function NewBusiness() {
                 />
 
                 <div className="mb-3">
-                    <Components.ButtonPic id='upload-widget' className='cloudinary-button' onClick={() => handleOpenWidget()}>
+                    <Components.ButtonPic id='upload-widget' className='cloudinary-button' onClick={handleOpenWidget}>
                         Choose background image
                     </Components.ButtonPic>
                     {
@@ -132,7 +136,7 @@ export default function NewBusiness() {
                     }
                 </div>
 
-                <Components.Button type="submit">Create</Components.Button>
+                <Components.Button type="button" onClick={handleClick}>Create</Components.Button>
             </Components.NewBusinessForm>
 
         </Components.NewBusinessContainer>

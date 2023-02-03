@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
 import { Navbar, Nav, NavDropdown, Container } from 'react-bootstrap'
 import { Link } from "react-router-dom";
-import { useHistory } from "react-router-dom";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import "../styles/Navbar.css";
+// import { useHistory } from "react-router-dom";
 // import { AuthContext } from '../context/AuthContext';
 
 export default function NavbarComp() {
 
   // const {user} = useContext(AuthContext)
-  let history = useHistory();
+  // let history = useHistory();
 
   const getUserData = JSON.parse(localStorage.getItem('token'));
 
@@ -21,7 +21,7 @@ export default function NavbarComp() {
 
   const logOut = () => {
     localStorage.removeItem('token');
-    history.push('/');
+    // history.push('/');
     window.location.reload(false);
   }
 
@@ -38,7 +38,7 @@ export default function NavbarComp() {
               {/* <Nav.Link as={Link} to={"/login"}>About us</Nav.Link> */}
             </Nav>
             <Nav className='nav-links'>
-              <Nav.Link className='QuichAppointment' as={Link} to={"/quickappointment"}><b>Quich Appointment</b></Nav.Link>
+              <Nav.Link className='QuichAppointment' as={Link} to={"/quickappointment"}><b>Quick Appointment</b></Nav.Link>
               <i className='fa-solid fa fa-user'></i>
               <NavDropdown title={getUserData ? `Hello ${getUserData.firstname}` : "Hello Guest"} id="collasible-nav-dropdown">
                 {
@@ -48,6 +48,9 @@ export default function NavbarComp() {
                         My appointments
                       </NavDropdown.Item>
                       <NavDropdown.Divider />
+                      <NavDropdown.Item as={Link} to={`/mybusiness/${getUserData._id}`}>
+                        My business
+                      </NavDropdown.Item>
                       <NavDropdown.Item as={Link} to={"/newbusiness"}>
                         Open a new bussiness
                       </NavDropdown.Item>
