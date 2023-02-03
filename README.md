@@ -1,5 +1,5 @@
 <h1 align="center"> Facework </h1>
-<div align="center">Sample Site for any business <br>
+<div align="center">All Business In One Place <br>
 <b>https://facework-israel.netlify.app</b>
 </div>
 
@@ -26,6 +26,15 @@ Clone the repository
 Install NPM packages (main folder, Back-end folder, Front-end folder
    ```sh
    npm install
+   ```
+Work on localhost: Go to Front-end -> api -> ApiRoutes.js <br/>
+Change in constructor from 
+   ```sh
+   route: 'https://facework-server-production.up.railway.app'
+   ```
+To
+   ```sh
+   route: 'http://localhost:<port of server>'
    ```
 Run the project
    ```sh
