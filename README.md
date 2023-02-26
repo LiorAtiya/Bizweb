@@ -30,7 +30,7 @@ Install NPM packages (main folder, Back-end folder, Front-end folder
 Work on localhost: Go to Front-end -> api -> ApiRoutes.js <br/>
 Change in constructor from 
    ```sh
-   route: 'https://facework-server-production.up.railway.app'
+   route: 'https://bizweb-israel.up.railway.app'
    ```
 To
    ```sh
