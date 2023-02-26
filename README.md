@@ -1,4 +1,4 @@
-<h1 align="center"> Facework </h1>
+<h1 align="center"> Bizweb </h1>
 <div align="center">All Business In One Place <br>
 <b>https://facework-israel.netlify.app</b>
 </div>
