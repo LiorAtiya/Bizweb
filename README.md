@@ -7,6 +7,8 @@
 
 'Facework' platform give business owners access to various services including publishing information about their company, uploading photos, products, and services, as well as managing a virtual meeting scheduler. Designed for simplicity and user-friendliness, requiring only basic knowledge.<br>
 From the customers' perspective, the platform will allow them to search for service providers based on distance, rating, price, etc. Customers could schedule an appointment with the service provider they are interested in, with an emphasis on finding a quick appointment among all the service providers with just one click. Following the completion of the service, the customer can rate his satisfaction with the service provider.
+In addition, there is a technology based on machine learning that offers the customer the appropriate category based on a database.
+and a system of quick appointment search according to the user's filter
    
 | Home Page | Home Page |
 | ------------- | ------------- |
