@@ -29,10 +29,11 @@ export default function Reviews({ id }) {
         setShow(true);
     }
 
-    const name = useRef();
+    const getUserData = JSON.parse(localStorage.getItem('token'));
+
+    const name = useRef(getUserData ? { value: getUserData.username + "" } : "");
     const review = useRef();
 
-    const getUserData = JSON.parse(localStorage.getItem('token'));
 
     const isAdmin = () => {
         if (getUserData) {
@@ -45,7 +46,6 @@ export default function Reviews({ id }) {
         const getResult = async () => {
             //get all reviews of the business from mongodb
             ApiClient.getAllReviews(id)
-                // await axios.get(`https://facework-server-production.up.railway.app/api/business/${id}/reviews`)
                 .then((res) => setReviewList(res.data))
                 .catch((err) => console.log(err));
         };
@@ -66,8 +66,9 @@ export default function Reviews({ id }) {
     }
 
     const addReview = async () => {
+
         //Checks not empty
-        if (name.current.value !== "" && review.current.value !== "" && currentValue !== 0){
+        if (name.current.value !== "" && review.current.value !== "" && currentValue !== 0) {
             const newReview = {
                 details: {
                     id: 'id' + (new Date()).getTime(),
@@ -77,22 +78,24 @@ export default function Reviews({ id }) {
                 },
                 userID: id
             }
-    
+
             ApiClient.addNewReview(id, newReview)
                 .then((res) => console.log('Added new review'))
                 .catch((err) => console.log(err));
-            // await axios.put(`https://facework-server-production.up.railway.app/api/business/${id}/reviews`, newReview);
             setReviewList(oldArray => [...oldArray, newReview.details]);
-            name.current.value = ""
+
+            if (!getUserData) name.current.value = ""
+
             review.current.value = ""
             setCurrentValue(0)
+        } else {
+            alert('Fill all details')
         }
     }
 
     const removeReview = async () => {
-        
-        ApiClient.removeReview(id,reviewID)
-        // await axios.delete(`https://facework-server-production.up.railway.app/api/business/${id}/reviews`, { data: { id: reviewID } })
+
+        ApiClient.removeReview(id, reviewID)
             .then((res) => console.log('Removed review'))
             .catch((err) => console.log(err));
 
@@ -102,7 +105,7 @@ export default function Reviews({ id }) {
     }
 
     return (
-        <div class="reviews-container">
+        <div className="reviews-container">
             <Card className='card-container'>
                 <Card.Header><h2>Star Rating</h2></Card.Header>
                 <Card.Header>
@@ -126,22 +129,23 @@ export default function Reviews({ id }) {
                     </div>
                 </Card.Header>
 
-                <Card.Body>
-                    <Card.Text className='card-text'>
-                        <form>
 
-                            <Components.Input type='text' placeholder='Your name'
+                <Card.Text>
+                    {
+                        getUserData ? <></>
+                            :
+                            <Components.NewBusinessInput type='text' placeholder='Your name'
                                 required ref={name}
                             />
+                    }
+                    <Components.TextArea type='textarea' placeholder="What's your feedback"
+                        required ref={review}
+                    />
 
-                            <Components.TextArea type='textarea' placeholder="What's your feedback"
-                                required ref={review}
-                            />
+                    <Components.Button type='button' onClick={addReview}>Submit</Components.Button>
 
-                            <Components.Button type='button' onClick={addReview}>Submit</Components.Button>
-                        </form>
-                    </Card.Text>
-                </Card.Body>
+                </Card.Text>
+
             </Card>
 
             <Modal
@@ -168,7 +172,7 @@ export default function Reviews({ id }) {
                 {
                     reviewList.map((item, i) => {
                         return (
-                            <>
+                            <div key={i}>
                                 {
                                     isAdmin() ?
                                         <Toast className='toast-box' onClose={() => {
@@ -194,7 +198,7 @@ export default function Reviews({ id }) {
                                         </Toast>
                                 }
                                 <br></br>
-                            </>
+                            </div>
                         )
                     })
                 }

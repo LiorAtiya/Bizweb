@@ -9,8 +9,6 @@ const cloudinary = require('cloudinary');
 const ApiKeyManager = require('@esri/arcgis-rest-request').ApiKeyManager;
 const geocode = require('@esri/arcgis-rest-geocoding').geocode;
 
-require('dotenv').config();
-
 //Connect to cloudinary
 cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
@@ -19,13 +17,13 @@ cloudinary.config({
 })
 
 //For location API
-const apiKey = 'AAPK59deace2cae94e53bbcf5811a8821134Oo-deTYayYmeeCCCei_3SsXpHWolWHqZmMY4lt8TMnqFsD1I4_JoAOZ7O8vSEO8K'
+const apiKey = process.env.LOCATION_APIKEY
 const authentication = ApiKeyManager.fromKey(apiKey);
 
 //Add new business
 router.post('/add', async (req, res) => {
     const { category, name, description,
-        city, address, phone, backgroundPicture } = req.body;
+        city, address, phone, backgroundPicture, tabs } = req.body;
 
     try {
         //Checks if the user already exist in database
@@ -34,7 +32,7 @@ router.post('/add', async (req, res) => {
             return res.send({ status: "Business Exists" });
         }
 
-        //Get coordination from given address
+        //Get coordination from given address & city
         const coordination = await geocode({
             address: address + " " + city,
             countryCode: "Israel",
@@ -48,11 +46,13 @@ router.post('/add', async (req, res) => {
             description,
             gallery: [],
             reviews: [],
+            shop: [],
             city,
             address,
             coordination: coordination.candidates[0],
             phone,
-            backgroundPicture
+            backgroundPicture,
+            tabs: tabs
         });
 
         //Create new calender for business (another schema)
@@ -62,7 +62,7 @@ router.post('/add', async (req, res) => {
             availableHours: [],
         });
 
-        console.log("Created new business")
+        console.log("\u001b[35m" + "Created new business" + "\u001b[0m");
         res.send(business);
     } catch (error) {
         res.send({ status: "error" })
@@ -95,7 +95,7 @@ router.put('/:id', async (req, res) => {
         countryCode: "Israel",
         authentication,
     })
-    
+
     try {
         const user = await Business.findByIdAndUpdate(req.params.id, {
             $set: req.body
@@ -165,6 +165,40 @@ router.get("/:id/reviews", async (req, res) => {
         const user = await Business.findById(req.params.id);
         res.status(200).json(user.reviews)
         console.log("\u001b[35m" + "Get all reviews" + "\u001b[0m");
+    } catch (err) {
+        res.status(500).json(err);
+    }
+})
+
+//Add new product to shop
+router.put("/:id/shop", async (req, res) => {
+    try {
+        //Add new product
+        await Business.findByIdAndUpdate({ _id: req.params.id }, { $push: { shop: req.body } });
+        console.log("\u001b[35m" + "Added new product to shop" + "\u001b[0m");
+        res.send("OK - 200 ");
+    } catch (err) {
+        res.status(500).json(err);
+    }
+})
+
+//Remove product from shop
+router.delete("/:id/shop", async (req, res) => {
+    try {
+        await Business.findOneAndUpdate({ _id: req.params.id }, { $pull: { shop: { id: req.body.productID } } });
+        console.log("\u001b[35m" + "Removed product from shop" + "\u001b[0m");
+        res.send("OK - 200 ");
+    } catch (err) {
+        res.status(500).json(err);
+    }
+})
+
+//Get shop of business
+router.get("/:id/shop", async (req, res) => {
+    try {
+        const business = await Business.findById(req.params.id);
+        res.status(200).json(business.shop)
+        console.log("\u001b[35m" + "Get shop" + "\u001b[0m");
     } catch (err) {
         res.status(500).json(err);
     }

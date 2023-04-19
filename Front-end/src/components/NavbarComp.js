@@ -21,16 +21,15 @@ export default function NavbarComp() {
 
   const logOut = () => {
     localStorage.removeItem('token');
-    // history.push('/');
     window.location.reload(false);
   }
 
   return (
     <div>
       <Navbar className='NavbarItems' collapseOnSelect expand="lg" bg="dark" variant="dark">
-        <Container>
-          <Navbar.Brand className='logo' as={Link} to={"/"}><b>Facework</b>
-          <i className='fa-solid fa-briefcase'></i>
+        <Container className='container-navbar'>
+          <Navbar.Brand className='logo' as={Link} to={"/"}><b>Bizweb</b>
+            <i className='fa-solid fa-briefcase'></i>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
@@ -39,34 +38,40 @@ export default function NavbarComp() {
             </Nav>
             <Nav className='nav-links'>
               <Nav.Link className='QuichAppointment' as={Link} to={"/quickappointment"}><b>Quick Appointment</b></Nav.Link>
-              <i className='fa-solid fa fa-user'></i>
-              <NavDropdown title={getUserData ? `Hello ${getUserData.firstname}` : "Hello Guest"} id="collasible-nav-dropdown">
-                {
-                  getUserData ? (
-                    <>
-                      <NavDropdown.Item as={Link} to={`/myappointments/${getUserData._id}`}>
-                        My appointments
-                      </NavDropdown.Item>
-                      <NavDropdown.Divider />
-                      <NavDropdown.Item as={Link} to={`/mybusiness/${getUserData._id}`}>
-                        My business
-                      </NavDropdown.Item>
-                      <NavDropdown.Item as={Link} to={"/newbusiness"}>
-                        Open a new bussiness
-                      </NavDropdown.Item>
-                      <NavDropdown.Divider />
-                      <NavDropdown.Item onClick={handleShow}>Logout</NavDropdown.Item>
-                    </>
-                  )
-                    :
-                    (
+              <div className='hello-user'>
+                <i className='fa-solid fa fa-user'></i>
+                <NavDropdown title={getUserData ? `Hello ${getUserData.firstname}` : "Hello Guest"} id="collasible-nav-dropdown">
+                  {
+                    getUserData ? (
                       <>
-                        <NavDropdown.Item as={Link} to={"/login"}>Login / Register</NavDropdown.Item>
-                        {/* <NavDropdown.Item as={Link} to={"/register"}>Register</NavDropdown.Item> */}
+                        <NavDropdown.Item as={Link} to={`/myappointments/${getUserData._id}`}>
+                          My appointments
+                        </NavDropdown.Item>
+                        <NavDropdown.Item as={Link} to={`/myshoppingcart/${getUserData._id}`}>
+                          My shopping cart
+                        </NavDropdown.Item>
+                        <NavDropdown.Divider />
+                        <NavDropdown.Item as={Link} to={`/mybusiness/${getUserData._id}`}>
+                          My business
+                        </NavDropdown.Item>
+                        <NavDropdown.Item as={Link} to={"/newbusiness"}>
+                          Open a new bussiness
+                        </NavDropdown.Item>
+                        <NavDropdown.Divider />
+                        <NavDropdown.Item onClick={handleShow}>Logout</NavDropdown.Item>
                       </>
                     )
-                }
-              </NavDropdown>
+                      :
+                      (
+                        <>
+                          <NavDropdown.Item as={Link} to={"/login"}>Login / Register</NavDropdown.Item>
+                          {/* <NavDropdown.Item as={Link} to={"/register"}>Register</NavDropdown.Item> */}
+                        </>
+                      )
+                  }
+                </NavDropdown>
+              </div>
+              <Nav.Link className='' as={Link} to={"/quickappointment"}><b>עברית</b></Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>

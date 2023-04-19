@@ -3,23 +3,27 @@ import React, { useRef, useState } from 'react'
 import { useHistory } from "react-router-dom";
 import cities from '../database/cities'
 import * as Components from '../styles/StyledForm';
+import '../styles/NewBusiness.css'
 import ApiClient from '../api/ApiRoutes';
 
 export default function NewBusiness() {
     const category = useRef("");
-    const name = useRef();
-    const description = useRef();
-    const city = useRef();
-    const address = useRef();
-    const phone = useRef();
+    const name = useRef("");
+    const description = useRef("");
+    const city = useRef("");
+    const address = useRef("");
+    const phone = useRef("");
     const history = useHistory();
 
     const [backgroundPicture, setBackgroundPicture] = useState("");
 
-    const citiesMap = cities.map((item, index) => {
+    const [tabs, setTabs] = useState({ Gallery: false, Calender: false, Shop: false, Reviews: false, Contact: false });
+
+    const citiesMap = cities?.map((item, index) => {
         return <option value={item.name} key={index}>{item.name}</option>
     })
 
+    //Update background image in cloundinary
     const handleOpenWidget = () => {
         var myWidget = window.cloudinary.createUploadWidget({
             cloudName: 'dk5mqzgcv',
@@ -39,21 +43,35 @@ export default function NewBusiness() {
     const handleClick = async (e) => {
         e.preventDefault();
 
+        const filterTabs = Object.keys(tabs).filter(key => {
+            return tabs[key] === true;
+        })
+
         const business = {
             category: category.current.value,
             name: name.current.value,
             description: description.current.value,
-            city: city.current.value,
-            address: address.current.value,
-            phone: phone.current.value,
+            city: city.current ? city.current.value : '',
+            address: address.current ? address.current.value : '',
+            phone: phone.current ? phone.current.value : '',
             backgroundPicture: backgroundPicture,
+            tabs: filterTabs
+        }
+
+        //No tab is selected
+        if (filterTabs.length === 0) {
+            alert('Select at least one category');
+            return
+        }
+        else if (business.name === '' | business.description === '' |
+            (tabs.Contact & business.address === '' & business.phone === '')) {
+            alert('Fill in all the details');
+            return
         }
 
         //send request to server to add new business
         ApiClient.addNewBusiness(business)
-            // await axios.post("https://facework-server-production.up.railway.app/api/business/add", business)
             .then((res) => {
-                console.log(res);
                 if (res.status === 200) {
                     //add id of business to list of business of user
                     const businessID = res.data._id;
@@ -62,13 +80,13 @@ export default function NewBusiness() {
                         userID: getUserData._id,
                         business: businessID
                     }
-                    
-                    ApiClient.addBusinessToUser(getUserData._id,business)
-                    // axios.put(`https://facework-server-production.up.railway.app/api/users/${getUserData._id}/business`, business)
+
+                    ApiClient.addBusinessToUser(getUserData._id, business)
                         .then((res) => {
                             window.localStorage.removeItem('token');
                             window.localStorage.setItem("token", JSON.stringify(res.data));
 
+                            alert('New business created')
                             history.push('/');
                             window.location.reload(false);
                         }).catch((err) => console.log(err));
@@ -76,6 +94,12 @@ export default function NewBusiness() {
                 }
             }).catch((err) => console.log(err));
     }
+
+    const handleGallery = (e) => { setTabs({ ...tabs, Gallery: e.target.checked }) }
+    const handleShop = (e) => { setTabs({ ...tabs, Shop: e.target.checked }) }
+    const handleCalender = (e) => { setTabs({ ...tabs, Calender: e.target.checked }) }
+    const handleReviews = (e) => { setTabs({ ...tabs, Reviews: e.target.checked }) }
+    const handleContact = (e) => { setTabs({ ...tabs, Contact: e.target.checked }) }
 
     return (
         <Components.NewBusinessContainer>
@@ -93,34 +117,58 @@ export default function NewBusiness() {
                             <option value="Professionals">Professionals</option>
                             <option value="Personal Trainers">Personal Trainers</option>
                             <option value="Private Teachers">Private Teachers</option>
-
                         </Components.Select>
                     </label>
                 </div>
 
-                <Components.Input type='text' placeholder='Business Name'
-                    required ref={name}
+                <Components.NewBusinessInput type='text' placeholder='Business Name'
+                    required ref={name} maxLength='15'
                 />
                 <Components.TextArea type='textarea' placeholder='Description'
-                    required ref={description}
+                    required ref={description} maxLength='400'
                 />
 
-                <div className="mb-3">
-                    <label>
-                        <b>City:</b><br></br>
-                        <Components.Select ref={city}>
-                            {citiesMap}
-                        </Components.Select>
-                    </label>
+                <b>Choose what you want in your business:</b>
+                <div className="mb-3 tabs-container">
+                    <div className='checkbox-tab'>
+                        <input type="checkbox" value='gallery' onChange={handleGallery} /> Gallery
+                    </div>
+                    <div className='checkbox-tab'>
+                        <input type="checkbox" value='shop' onChange={handleShop} /> Shop
+                    </div>
+                    <div className='checkbox-tab'>
+                        <input type="checkbox" value='calender' onChange={handleCalender} /> Callender
+                    </div>
+                    <div className='checkbox-tab'>
+                        <input type="checkbox" value='reviews' onChange={handleReviews} /> Reviews
+                    </div>
+                    <div className='checkbox-tab'>
+                        <input type="checkbox" value='contact' onChange={handleContact} /> Contact
+                    </div>
                 </div>
 
-                <Components.Input type='text' placeholder='Address'
-                    required ref={address}
-                />
+                {
+                    tabs.Contact ?
+                        <>
+                            <div className="mb-3">
+                                <label>
+                                    <b>City:</b><br></br>
+                                    <Components.Select ref={city}>
+                                        {citiesMap}
+                                    </Components.Select>
+                                </label>
+                            </div>
 
-                <Components.Input type='number' placeholder='Phone'
-                    required ref={phone}
-                />
+                            <Components.NewBusinessInput type='text' placeholder='Address'
+                                required ref={address}
+                            />
+
+                            <Components.NewBusinessInput type='number' placeholder='Phone'
+                                required ref={phone}
+                            />
+                        </>
+                        : <></>
+                }
 
                 <div className="mb-3">
                     <Components.ButtonPic id='upload-widget' className='cloudinary-button' onClick={handleOpenWidget}>
@@ -139,6 +187,6 @@ export default function NewBusiness() {
                 <Components.Button type="button" onClick={handleClick}>Create</Components.Button>
             </Components.NewBusinessForm>
 
-        </Components.NewBusinessContainer>
+        </Components.NewBusinessContainer >
     )
 }

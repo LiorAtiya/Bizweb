@@ -4,8 +4,8 @@ const Calender = require('../Models/calender')
 require('dotenv').config();
 
 //For Sending SMS API (Twillio)
-const accountSid = 'AC6e9f3c0fbcdb78099ad021619a63b6e3'
-const authToken = '96f87975ef3724144edc05d18e6443cf'
+const accountSid = process.env.TWILLIO_ACCOUNTSID
+const authToken = process.env.TWILLIO_AUTHTOKEN
 const client = require('twilio')(accountSid, authToken, {
     lazyLoading: true
 });
@@ -35,12 +35,12 @@ router.post('/create-event', async (req, res) => {
         //Remove hour from available hours
         await Calender.findOneAndUpdate({ businessID: req.body.businessID }, { $pull: { "availableHours": { date: req.body.date, time: req.body.time } } });
 
-        // //Sending SMS to client about the appointment
-        // client.messages.create({
-        //     body: `שלום ${req.body.name} \n נקבע לך תור בתאריך ${req.body.date} בשעה ${req.body.time}`,
-        //     to: '+972' + req.body.phone,
-        //     from: '+14059934995'
-        // }).then((message) => console.log(message.body));
+        //Sending SMS to client about the appointment
+        client.messages.create({
+            body: `שלום ${req.body.name} \n נקבע לך תור בתאריך ${req.body.date} בשעה ${req.body.time}`,
+            to: '+972' + req.body.phone,
+            from: '+14059934995'
+        }).then((message) => console.log(message.body));
 
         res.send(afterUpdate);
 
@@ -84,21 +84,21 @@ router.delete('/delete-event', async (req, res) => {
 //delete expired events from calender
 router.delete('/delete-expired-events', async (req, res) => {
 
-    // Get current hour (localhost)
-    let min, hours, currentTime;
-    if ((new Date().getHours()) < 10) {
-        hours = '0' + (new Date().getHours())
-    } else {
-        hours = (new Date().getHours())
-    }
-
-    // // Get current hour (+2 for server of railway.app)
+    // // Get current hour (localhost)
     // let min, hours, currentTime;
-    // if ((new Date().getHours() + 2) < 10) {
-    //     hours = '0' + (new Date().getHours() + 2)
+    // if ((new Date().getHours()) < 10) {
+    //     hours = '0' + (new Date().getHours())
     // } else {
-    //     hours = (new Date().getHours() + 2)
+    //     hours = (new Date().getHours())
     // }
+
+    // Get current hour (+2 for server of railway.app)
+    let min, hours, currentTime;
+    if ((new Date().getHours() + 2) < 10) {
+        hours = '0' + (new Date().getHours() + 2)
+    } else {
+        hours = (new Date().getHours() + 2)
+    }
 
     if (new Date().getMinutes() < 10) {
         min = '0' + new Date().getMinutes()

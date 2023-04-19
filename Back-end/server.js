@@ -1,5 +1,6 @@
 const express = require("express");
 const dotenv = require('dotenv');
+dotenv.config();
 const mongoose = require("mongoose");
 const helmet = require('helmet');
 const morgan = require('morgan');
@@ -11,7 +12,6 @@ const authRoute = require('./Routes/auth')
 const businessRoute = require('./Routes/business')
 const calenderRoute = require('./Routes/calander')
 
-dotenv.config();
 const app = express();
 
 // Connection to database   
@@ -44,8 +44,7 @@ app.get('/', (req, res) => {
 })
 
 //Connection to server
-// const port = process.env.PORT || 5015;
-const port = 3015
+const port = process.env.PORT || 5015;
 app.listen(port, () => {
     console.log("Server Started with http://localhost:" + port + "/");
 })

@@ -5,8 +5,8 @@ class ApiRoutes extends Component {
     constructor() {
         super()
         this.state = {
-            route: 'http://localhost:3015', //localhost
-            // route: 'https://facework-server-production.up.railway.app' //server
+            route: 'http://localhost:3010' //localhost
+            // route: 'https://bizweb-israel.up.railway.app' //server
         }
     }
 
@@ -17,14 +17,24 @@ class ApiRoutes extends Component {
             .then(response => response);
     }
 
+    async fastLogin(user) {
+        return await axios.post(`${this.state.route}/api/auth/fast-login`,user)
+            .then(response => response);
+    }
+
     // Register Page
     async register(user) {
         return await axios.post(`${this.state.route}/api/auth/register`, user)
             .then(response => response);
     }
 
-    //MyApointment & Calender Page
+    //MyApointment & MyShoppingCart & Calender Page
     async getMyAppointments(userID) {
+        return await axios.get(`${this.state.route}/api/users/${userID}`)
+            .then(response => response);
+    }
+
+    async getUserDetails(userID) {
         return await axios.get(`${this.state.route}/api/users/${userID}`)
             .then(response => response);
     }
@@ -46,6 +56,12 @@ class ApiRoutes extends Component {
             .then(response => response);
     }
 
+    //Quick appointment Page
+    async findQuickAppointment(business) {
+        return await axios.post(`${this.state.route}/api/business/home/quickappointment`, business)
+            .then(response => response);
+    }
+
     //My Business Page
     async deleteBusiness(userID, businessID) {
         return await axios.delete(`${this.state.route}/api/business/delete`,
@@ -56,7 +72,7 @@ class ApiRoutes extends Component {
     //Edit Business Page
     async updateDetailsOfBusiness(id, updatedDetails) {
         return await axios.put(`${this.state.route}/api/business/${id}`, updatedDetails)
-        .then(response => response);
+            .then(response => response);
     }
 
     // New Business Page
@@ -157,6 +173,44 @@ class ApiRoutes extends Component {
     async removeReview(id, reviewID) {
         return await axios.delete(`${this.state.route}/api/business/${id}/reviews`,
             { data: { id: reviewID } });
+    }
+
+    //Shop & MyShoppingCart Page
+    async addNewProduct(id, newProduct) {
+        return await axios.put(`${this.state.route}/api/business/${id}/shop`, newProduct)
+            .then(response => response.data);
+    }
+
+    async removeProductFromShop(id, productID) {
+        return await axios.delete(`${this.state.route}/api/business/${id}/shop`,
+            { data: { productID: productID } })
+            .then(response => response.data);
+    }
+
+    async getAllProducts(id) {
+        return await axios.get(`${this.state.route}/api/business/${id}/shop`)
+            .then(response => response);
+    }
+
+    async increaseQuantity(userID, product) {
+        return await axios.put(`${this.state.route}/api/users/${userID}/increase-quantity`, product)
+            .then(response => response.data);
+    }
+
+    async decreaseQuantity(userID, product) {
+        return await axios.put(`${this.state.route}/api/users/${userID}/decrease-quantity`, product)
+            .then(response => response.data);
+    }
+
+    async clearCart(userID) {
+        return await axios.delete(`${this.state.route}/api/users/${userID}/clear-cart`)
+            .then(response => response.data);
+    }
+
+    async RemoveProductFromCart(userID, productID) {
+        return await axios.delete(`${this.state.route}/api/users/${userID}/remove-product-from-cart`,
+            { data: { productID: productID } })
+            .then(response => response.data);
     }
 
 }
