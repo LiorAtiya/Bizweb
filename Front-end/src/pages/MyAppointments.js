@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from "react-router-dom";
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
-// import axios from 'axios';
 import '../styles/Form.css'
 import ApiClient from '../api/ApiRoutes';
 import { useTranslation } from 'react-i18next';
@@ -18,10 +17,11 @@ export function MyAppointments() {
     useEffect(() => {
         const getResult = async () => {
             // gets all appintments of user
-            ApiClient.getMyAppointments(userID)
+            const token = JSON.parse(localStorage.getItem('token'));
+            ApiClient.getUserInfo(token)
                 .then((res) => {
-                    localStorage.setItem("token", JSON.stringify(res.data));
-                    setUserData(JSON.parse(localStorage.getItem('token')));
+                    localStorage.setItem("user-info", JSON.stringify(res.data));
+                    setUserData(JSON.parse(localStorage.getItem('user-info')));
                 })
                 .catch((err) => console.log(err));
         };
@@ -44,11 +44,11 @@ export function MyAppointments() {
                 appointment.userID = userID;
                 ApiClient.deleteEventFromMyAppointments(appointment)
                     .then((res) => {
-                        if (res.status !== 500) {
+                        
                             window.localStorage.setItem("token", JSON.stringify(res.data));
                             console.log("Delete appointment from list of user");
                             window.location.reload(false);
-                        }
+                        
                     })
                     .catch((err) => console.log(err));
             }).catch((err) => console.log(err));

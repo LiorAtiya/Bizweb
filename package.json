@@ -1,7 +1,7 @@
 {
   "name": "facework",
   "version": "1.0.0",
-  "description": "Sample Site for any business",
+  "description": "A platform for creating a website for any business",
   "main": "index.js",
   "scripts": {
     "server": "npm run watch --prefix Back-end",

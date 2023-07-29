@@ -38,7 +38,7 @@ To
    ```
 Run the project
    ```sh
-   npm run watch
+   npm run start
    ```
 
 <h2>Technologies</h2>

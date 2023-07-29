@@ -14,7 +14,7 @@ export function MyBusiness() {
     const { getAllBusinessOfUser } = context;
     const { t } = useTranslation();
 
-    const getUserData = JSON.parse(localStorage.getItem('token'));
+    const getUserData = JSON.parse(localStorage.getItem('user-info'));
     const allBusiness = getAllBusinessOfUser(getUserData.business);
 
     const currentLanguage = localStorage.getItem('language')

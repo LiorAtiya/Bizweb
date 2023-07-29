@@ -1,7 +1,4 @@
-const router = require('express').Router();
 const Calender = require('../Models/calender')
-
-require('dotenv').config();
 
 // //For Sending SMS API (Twillio)
 // const accountSid = process.env.TWILLIO_ACCOUNTSID
@@ -11,7 +8,7 @@ require('dotenv').config();
 // });
 
 //Create new event in the calender
-router.post('/create-event', async (req, res) => {
+const createNewEvent = async (req, res) => {
     // const { businessID, date, time,busy, name, phone, comments } = req.body;
 
     //client made an appointment
@@ -56,10 +53,9 @@ router.post('/create-event', async (req, res) => {
         res.send(afterUpdate);
     }
 }
-)
 
 //delete event from calender
-router.delete('/delete-event', async (req, res) => {
+const deleteEvent = async (req, res) => {
 
     try {
         //delete event
@@ -79,10 +75,10 @@ router.delete('/delete-event', async (req, res) => {
     }
 
     res.send("Delete event & add to availableHours");
-})
+}
 
 //delete expired events from calender
-router.delete('/delete-expired-events', async (req, res) => {
+const deleteExpiredEvents = async (req, res) => {
 
     // // Get current hour (localhost)
     // let min, hours, currentTime;
@@ -123,14 +119,14 @@ router.delete('/delete-expired-events', async (req, res) => {
     //Remove from list of appointments
     await Calender.findOneAndUpdate({ businessID: req.body.businessID }, { $pull: { "dates": { expiredDate: { $lte: validityDate }, expiredTime: { $lt: validityTime } } } });
     res.status(200).json(events);
-})
+}
 
 //Get all the events of business
-router.post('/get-events', async (req, res) => {
+const getAllEvents = async (req, res) => {
 
     const events = await Calender.findOne({ businessID: req.body.businessID });
     console.log("\u001b[35m" + "Get calender" + "\u001b[0m");
     res.send(events)
-})
+}
 
-module.exports = router
+module.exports = {createNewEvent,deleteEvent,deleteExpiredEvents,getAllEvents}

@@ -75,7 +75,7 @@ const Calendar = ({ id, businessName }) => {
     const [show2, setShow2] = useState(false);
     const handleClose2 = () => setShow2(false);
     const handleShow2 = () => setShow2(true);
-    const getUserData = JSON.parse(localStorage.getItem('token'));
+    const getUserData = JSON.parse(localStorage.getItem('user-info'));
 
     const isAdmin = () => {
         if (getUserData) {
