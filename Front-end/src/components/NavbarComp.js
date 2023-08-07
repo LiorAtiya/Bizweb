@@ -57,7 +57,7 @@ export default function NavbarComp() {
                         <NavDropdown.Item as={Link} to={`/myappointments`}>
                           {t("MyAppointments")}
                         </NavDropdown.Item>
-                        <NavDropdown.Item as={Link} to={`/myshoppingcart/${getUserData._id}`}>
+                        <NavDropdown.Item as={Link} to={`/myshoppingcart`}>
                           {t("MyShoppingCart")}
                         </NavDropdown.Item>
                         <NavDropdown.Divider />

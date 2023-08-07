@@ -66,7 +66,7 @@ export function EditBusiness() {
             .then(res => {
                 window.location.reload(false);
             })
-            .catch((err) => console.log(err));
+            .catch();
     }
 
     return (

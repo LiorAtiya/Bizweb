@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const { checkAdminBusiness } = require("../Middleware/Admin");
+const { authenticateToken } = require("../Middleware/Auth");
 
 const {
   addNewBusiness,
@@ -21,8 +22,8 @@ const {
   quickAppointment,
 } = require("../Controllers/business.controller");
 
-router.post("/add", addNewBusiness);
-router.delete("/delete", deleteBusiness);
+router.post("/add", authenticateToken, addNewBusiness);
+router.delete("/delete", authenticateToken, deleteBusiness);
 router.put("/:id", checkAdminBusiness, updateDetailsBusiness);
 router.get("/:id", getInfoBusiness);
 router.get("/", getAllBusiness);

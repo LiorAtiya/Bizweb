@@ -5,8 +5,8 @@ class ApiRoutes extends Component {
   constructor() {
     super();
     this.state = {
-      // route: "http://localhost:3010", //localhost
-      route: 'https://bizweb-israel.up.railway.app' //server
+      route: "http://localhost:3010", //localhost
+      // route: 'https://bizweb-israel.up.railway.app' //server
     };
   }
 
@@ -67,12 +67,6 @@ class ApiRoutes extends Component {
   //     .then((response) => response);
   // }
 
-  async getUserDetails(userID) {
-    return await axios
-      .get(`${this.state.route}/api/users/${userID}`)
-      .then((response) => response);
-  }
-
   async deleteEventFromCalender(appointment) {
     return await axios
       .delete(`${this.state.route}/api/calender/delete-event`, {
@@ -92,7 +86,7 @@ class ApiRoutes extends Component {
 
   async addAvailableHour(appointment) {
     return await axios
-      .post(`${this.state.route}/api/calender/create-event`, appointment)
+      .post(`${this.state.route}/api/calender/add-hours`, appointment)
       .then((response) => response);
   }
 
@@ -104,10 +98,11 @@ class ApiRoutes extends Component {
   }
 
   //My Business Page
-  async deleteBusiness(userID, businessID) {
+  async deleteBusiness(token, businessID) {
     return await axios
       .delete(`${this.state.route}/api/business/delete`, {
-        data: { businessID: businessID, userID: userID },
+        headers: { Authorization: token },
+        data: { businessID: businessID },
       })
       .then((response) => response);
   }
@@ -122,9 +117,11 @@ class ApiRoutes extends Component {
   }
 
   // New Business Page
-  async addNewBusiness(business) {
+  async addNewBusiness(token, business) {
     return await axios
-      .post(`${this.state.route}/api/business/add`, business)
+      .post(`${this.state.route}/api/business/add`, business, {
+        headers: { Authorization: token },
+      })
       .then((response) => response);
   }
 
@@ -266,30 +263,36 @@ class ApiRoutes extends Component {
       .then((response) => response);
   }
 
-  async increaseQuantity(userID, product) {
+  async increaseQuantity(token, product) {
     return await axios
-      .put(`${this.state.route}/api/users/${userID}/increase-quantity`, product)
+      .put(`${this.state.route}/api/users/increase-quantity`, product, {
+        headers: { Authorization: token },
+      })
       .then((response) => response.data);
   }
 
-  async decreaseQuantity(userID, product) {
+  async decreaseQuantity(token, product) {
     return await axios
-      .put(`${this.state.route}/api/users/${userID}/decrease-quantity`, product)
+      .put(`${this.state.route}/api/users/decrease-quantity`, product, {
+        headers: { Authorization: token },
+      })
       .then((response) => response.data);
   }
 
-  async clearCart(userID) {
+  async clearCart(token) {
     return await axios
-      .delete(`${this.state.route}/api/users/${userID}/clear-cart`)
+      .delete(`${this.state.route}/api/users/clear-cart`, {
+        headers: { Authorization: token },
+      })
       .then((response) => response.data);
   }
 
-  async RemoveProductFromCart(userID, productID) {
+  async RemoveProductFromCart(token, productID) {
     return await axios
-      .delete(
-        `${this.state.route}/api/users/${userID}/remove-product-from-cart`,
-        { data: { productID: productID } }
-      )
+      .delete(`${this.state.route}/api/users/remove-product-from-cart`, {
+        headers: { Authorization: token },
+        data: { productID: productID },
+      })
       .then((response) => response.data);
   }
 }

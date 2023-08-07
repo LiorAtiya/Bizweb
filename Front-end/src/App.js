@@ -60,7 +60,7 @@ export default function App() {
             <Route exact path="/myappointments">
               {getUserInfo() ? <MyAppointments /> : <Redirect to="/" />}
             </Route>
-            <Route exact path="/myshoppingcart/:userID">
+            <Route exact path="/myshoppingcart">
               {getUserInfo() ? <MyShoppingCart /> : <Redirect to="/" />}
             </Route>
             <Route exact path="/mybusiness">

@@ -6,12 +6,12 @@ const logger = require("../Utils/logs/logger");
 
 //Register new user
 const register = async (req, res) => {
-  const { firstname, lastname, username, email, password } = req.body;
-
-  //Encrypt password
-  const encrypedPassword = await bcrypt.hash(password, 10);
 
   try {
+    const { firstname, lastname, username, email, password } = req.body;
+
+    //Encrypt password
+    const encrypedPassword = await bcrypt.hash(password, 10);
     //checks if the user already exist in database
     const oldUser = await User.findOne({ email: email });
     if (oldUser) {
@@ -30,9 +30,11 @@ const register = async (req, res) => {
       myAppointments: [],
     });
 
-    res.send(newUser);
+    logger.info(`Registered new user - Email: ${email}`);
+    return res.send(newUser);
   } catch (error) {
-    res.send({ status: "error" });
+    logger.error(error);
+    return res.sendStatus(500);
   }
 };
 
@@ -82,10 +84,10 @@ const fastLogin = async (req, res) => {
 
       logger.info(`New User: ${email} was registered`);
 
-      const { _id, password, updatedAt, createdAt, ...other } = newUser._doc;
+      const { password, updatedAt, createdAt, ...other } = newUser._doc;
       return res.send(other);
     } else {
-      const { _id, password, updatedAt, createdAt, ...other } = user._doc;
+      const { password, updatedAt, createdAt, ...other } = user._doc;
       logger.info(`Login Email: ${other.email} was successful`);
       return res.send(other);
     }

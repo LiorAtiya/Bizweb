@@ -50,3 +50,9 @@
 2023-07-29T23:27:19.890Z error: Request failed with status code 400
 2023-07-29T23:28:25.975Z error: invalid algorithm
 2023-07-29T23:29:32.201Z error: invalid algorithm
+2023-07-29T23:59:30.145Z error: jwt malformed
+2023-07-30T12:22:38.673Z error: Cannot set headers after they are sent to the client
+2023-07-31T14:53:39.002Z error: Invalid Password
+2023-08-03T10:32:17.652Z error: Business Exists
+2023-08-06T00:35:05.902Z error: Cannot read properties of undefined (reading 'businessID')
+2023-08-06T00:36:20.697Z error: Cannot read properties of undefined (reading 'businessID')

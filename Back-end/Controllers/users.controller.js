@@ -33,7 +33,8 @@ const updateUserInfo = async (req, res) => {
 const getUserInfo = async (req, res) => {
   try {
     //Not necessary
-    const { _id, password, updatedAt, createdAt, ...other } = req.user;
+    const user = await User.findOne({ email: req.user.email });
+    const { password, updatedAt, createdAt, ...other } = user._doc;
     logger.info(`Get user info of ${other.email}`);
 
     return res.status(200).json(other);
@@ -45,18 +46,16 @@ const getUserInfo = async (req, res) => {
 
 //Add new record of category entry
 const addRecordCategoryEntry = async (req, res) => {
-
   try {
-  
     const oldUser = await User.findOne({ email: req.user.email });
     if (!oldUser) {
       logger.error(`Email: ${req.user.email} not exist`);
-      return res.sendStatus(404)
+      return res.sendStatus(404);
     }
 
     const { firstname, lastname, username, email } = req.user;
     const { category } = req.body;
-    
+
     //create new record
     await CategoryEntries.create({
       firstname,
@@ -65,7 +64,7 @@ const addRecordCategoryEntry = async (req, res) => {
       email,
       category,
     });
-    
+
     logger.info(`Add new record of category entry - ${category}`);
 
     return res.status(200);
@@ -96,40 +95,21 @@ const getPredictionOfBigML = async (req, res) => {
   }
 };
 
-//Add new business to list of user
-const addNewBusinessToUser = async (req, res) => {
-  const { business } = req.body;
-  try {
-    await User.findByIdAndUpdate(
-      { _id: req.params.id },
-      { $push: { business: business } }
-    );
-    const user = await User.findById(req.params.id);
-    res.status(200).json(user);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-};
-
 //Add appointment
 const addNewEvent = async (req, res) => {
-  const appointment = {
-    businessID: req.body.businessID,
-    name: req.body.businessName,
-    phone: req.body.phone,
-    date: req.body.date,
-    time: req.body.time,
-  };
   try {
     await User.findByIdAndUpdate(
       { _id: req.params.id },
-      { $push: { myAppointments: appointment } }
+      { $push: { myAppointments: req.body } }
     );
-    console.log("Added new appointment");
+
     const user = await User.findOne({ _id: req.params.id });
+    logger.info(`A new appointment to registered user: ${req.body.userID}`);
+
     return res.json(user);
   } catch (err) {
-    res.status(500).json(err);
+    logger.error(err);
+    return res.sendStatus(500);
   }
 };
 
@@ -141,14 +121,14 @@ const deleteEvent = async (req, res) => {
       {
         $pull: {
           myAppointments: {
-            id: req.body.id,
-            date: req.body.date,
-            time: req.body.time,
+            id: req.body.eventID,
           },
         },
       }
     );
-    console.log("Removed appointment");
+    logger.info(
+      `Remove event ${req.body.eventID} from list of user ${req.params.id}`
+    );
     const user = await User.findOne({ _id: req.params.id });
 
     return res.json(user);
@@ -160,60 +140,62 @@ const deleteEvent = async (req, res) => {
 //Add/Increase new product to cart
 const increaseQuantityInCart = async (req, res) => {
   try {
-    const user = await User.findOne({ _id: req.params.id });
+    const user = await User.findOne({ _id: req.user._id });
     const itemIndex = user.myShoppingCart.findIndex(
       (item) => item.id === req.body.id
     );
     if (itemIndex >= 0) {
       user.myShoppingCart[itemIndex].quantity += 1;
       const afterChange = user.myShoppingCart[itemIndex].quantity;
-      const query = { _id: req.params.id, "myShoppingCart.id": req.body.id };
+      const query = { _id: req.user._id, "myShoppingCart.id": req.body.id };
       const updateDocument = {
         $set: { "myShoppingCart.$.quantity": afterChange },
       };
-      const result = await User.updateOne(query, updateDocument);
+      await User.updateOne(query, updateDocument);
 
-      console.log("\u001b[35m" + "increased product to cart" + "\u001b[0m");
+      logger.info(`Increased product: ${req.body.id} to cart`);
     } else {
       await User.findByIdAndUpdate(
-        { _id: req.params.id },
+        { _id: req.user._id },
         { $push: { myShoppingCart: req.body } }
       );
-      console.log("\u001b[35m" + "Added new product to cart" + "\u001b[0m");
+      logger.info(`Added new product: ${req.body.id} to cart`);
     }
-    res.status(200).json(user);
+
+    return res.sendStatus(200);
   } catch (err) {
-    res.status(500).json(err);
+    logger.error(err);
+    return res.sendStatus(500);
   }
 };
 
 //Decrease product from my cart
 const decreaseQuantityInCart = async (req, res) => {
   try {
-    const user = await User.findOne({ _id: req.params.id });
+    const user = await User.findOne({ _id: req.user._id });
     const itemIndex = user.myShoppingCart.findIndex(
       (item) => item.id === req.body.id
     );
     if (user.myShoppingCart[itemIndex].quantity > 1) {
       user.myShoppingCart[itemIndex].quantity -= 1;
       const afterChange = user.myShoppingCart[itemIndex].quantity;
-      const query = { _id: req.params.id, "myShoppingCart.id": req.body.id };
+      const query = { _id: req.user._id, "myShoppingCart.id": req.body.id };
       const updateDocument = {
         $set: { "myShoppingCart.$.quantity": afterChange },
       };
-      const result = await User.updateOne(query, updateDocument);
-
-      console.log("\u001b[35m" + "decreased product from cart" + "\u001b[0m");
+      await User.updateOne(query, updateDocument);
+      logger.info(`Decreased product: ${req.body.id} from cart`);
     } else {
       await User.findByIdAndUpdate(
-        { _id: req.params.id },
+        { _id: req.user._id },
         { $pull: { myShoppingCart: req.body } }
       );
-      console.log("\u001b[35m" + "Removed product from cart" + "\u001b[0m");
+      logger.info(`Removed product: ${req.body.id} from cart`);
     }
-    res.status(200).json(user);
+    return res.sendStatus(200);
   } catch (err) {
-    res.status(500).json(err);
+    logger.error(err);
+    return res.sendStatus(500);
   }
 };
 
@@ -221,27 +203,29 @@ const decreaseQuantityInCart = async (req, res) => {
 const removeProductFromCart = async (req, res) => {
   try {
     await User.findOneAndUpdate(
-      { _id: req.params.id },
+      { _id: req.user._id },
       { $pull: { myShoppingCart: { id: req.body.productID } } }
     );
-    console.log("\u001b[35m" + "Remove product from cart" + "\u001b[0m");
-    res.status(200);
+    logger.info(
+      `Remove product: ${req.body.productID} from cart of user: ${req.user._id}`
+    );
+    return res.sendStatus(200);
   } catch (err) {
-    res.status(500).json(err);
+    logger.error(err);
+    return res.sendStatus(500);
   }
 };
 
 //Clear my cart
 const clearCart = async (req, res) => {
   try {
-    await User.findByIdAndUpdate(
-      { _id: req.params.id },
-      { myShoppingCart: [] }
-    );
-    console.log("\u001b[35m" + "Clear cart" + "\u001b[0m");
-    res.status(200);
+    await User.findByIdAndUpdate({ _id: req.user._id }, { myShoppingCart: [] });
+    
+    logger.info(`Clear cart of user: ${req.user._id}`);
+    return res.sendStatus(200);
   } catch (err) {
-    res.status(500).json(err);
+    logger.error(err);
+    return res.sendStatus(500);
   }
 };
 
@@ -260,14 +244,12 @@ const clearCart = async (req, res) => {
 //     }
 // })
 
-
 module.exports = {
   updateUserInfo,
   getUserInfo,
   addRecordCategoryEntry,
   trainBigML,
   getPredictionOfBigML,
-  addNewBusinessToUser,
   addNewEvent,
   deleteEvent,
   increaseQuantityInCart,

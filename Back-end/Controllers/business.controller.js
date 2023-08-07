@@ -21,22 +21,23 @@ const apiKey = process.env.LOCATION_APIKEY;
 const authentication = ApiKeyManager.fromKey(apiKey);
 
 const addNewBusiness = async (req, res) => {
-  const {
-    category,
-    name,
-    description,
-    city,
-    address,
-    phone,
-    backgroundPicture,
-    tabs,
-  } = req.body;
-
   try {
+    const {
+      category,
+      name,
+      description,
+      city,
+      address,
+      phone,
+      backgroundPicture,
+      tabs,
+    } = req.body;
+
     //Checks if the user already exist in database
     const oldName = await Business.findOne({ name: name });
     if (oldName) {
-      return res.send({ status: "Business Exists" });
+      logger.error("Business Exists");
+      return res.sendStatus(401);
     }
 
     //Get coordination from given address & city
@@ -63,36 +64,45 @@ const addNewBusiness = async (req, res) => {
     });
 
     //Create new calender for business (another schema)
-    const event = await Calender.create({
+    await Calender.create({
       businessID: business._id,
       dates: [],
       availableHours: [],
     });
 
-    console.log("\u001b[35m" + "Created new business" + "\u001b[0m");
-    res.send(business);
+    //Add new business to list of user
+    await User.findByIdAndUpdate(
+      { _id: req.user._id },
+      { $push: { business: business._id } }
+    );
+
+    logger.info(`Created new business: ${business._id}`);
+    return res.sendStatus(200);
   } catch (error) {
-    res.send({ status: "error" });
+    logger.error(err);
+    return res.sendStatus(500);
   }
 };
 
 //Delete business
 const deleteBusiness = async (req, res) => {
   try {
-    const { businessID, userID } = req.body;
+    const { businessID } = req.body;
     //Delete business
     await Business.deleteOne({ _id: businessID });
     //Delete from list of user
     await User.findOneAndUpdate(
-      { _id: userID },
+      { _id: req.user._id },
       { $pull: { business: businessID } }
     );
     //Delete calender of business
     await Calender.deleteOne({ businessID: businessID });
 
-    res.status(200).json("business has been removed");
+    logger.info(`Business: ${businessID} deleted`);
+    return res.sendStatus(200);
   } catch (err) {
-    return res.status(500).json(err);
+    logger.error(err);
+    return res.sendStatus(500);
   }
 };
 
@@ -109,7 +119,7 @@ const updateDetailsBusiness = async (req, res) => {
     req.body.coordination = coordination.candidates[0];
 
     if (req.body.prevBackgroundPicture.id !== req.body.backgroundPicture) {
-      await cloudinary.uploader.destroy(req.body.prevBackgroundPicture.id)
+      await cloudinary.uploader.destroy(req.body.prevBackgroundPicture.id);
     }
 
     const user = await Business.findByIdAndUpdate(req.params.id, {
@@ -134,9 +144,11 @@ const getInfoBusiness = async (req, res) => {
     const business = await Business.findById(req.params.id);
     //Not necessary
     // const {username,password,updatedAt, ...other} = user._doc
-    res.status(200).json(business);
+    logger.info(`Get info business: ${business._id}`);
+    return res.status(200).json(business);
   } catch (err) {
-    res.status(500).json(err);
+    logger.error(err);
+    return res.sendStatus(500);
   }
 };
 
@@ -144,27 +156,29 @@ const getInfoBusiness = async (req, res) => {
 const getAllBusiness = async (req, res) => {
   try {
     const allBusiness = await Business.find({ type: "name" });
-    console.log("\u001b[35m" + "Get all business" + "\u001b[0m");
-    res.status(200).json(allBusiness);
+
+    logger.info(`Get all business`);
+    return res.status(200).json(allBusiness);
   } catch (err) {
-    res.status(500).json(err);
+    logger.error(err);
+    return res.sendStatus(500);
   }
 };
 
 //Add new review
 const addNewReview = async (req, res) => {
-  if (req.body.userID == req.params.id) {
-    try {
-      //Add new review
-      await Business.findByIdAndUpdate(
-        { _id: req.params.id },
-        { $push: { reviews: req.body.details } }
-      );
-      console.log("Added new review");
-      res.send("OK - 200 ");
-    } catch (err) {
-      res.status(500).json(err);
-    }
+  try {
+    //Add new review
+    await Business.findByIdAndUpdate(
+      { _id: req.params.id },
+      { $push: { reviews: req.body.details } }
+    );
+
+    logger.info(`Added new review to business: ${req.params.id}`);
+    return res.sendStatus(200);
+  } catch (err) {
+    logger.error(err);
+    return res.sendStatus(500);
   }
 };
 
@@ -175,10 +189,12 @@ const deleteReview = async (req, res) => {
       { _id: req.params.id },
       { $pull: { reviews: { id: req.body.id } } }
     );
-    console.log("Removed review");
-    res.send("OK - 200 ");
+
+    logger.info(`Removed review from business: ${req.params.id}`);
+    return res.sendStatus(200);
   } catch (err) {
-    res.status(500).json(err);
+    logger.error(err);
+    return res.sendStatus(500);
   }
 };
 
@@ -186,10 +202,12 @@ const deleteReview = async (req, res) => {
 const getAllReviews = async (req, res) => {
   try {
     const user = await Business.findById(req.params.id);
-    res.status(200).json(user.reviews);
-    console.log("\u001b[35m" + "Get all reviews" + "\u001b[0m");
+
+    logger.info(`Get all reviews of business: ${req.params.id}`);
+    return res.status(200).json(user.reviews);
   } catch (err) {
-    res.status(500).json(err);
+    logger.error(err);
+    return res.sendStatus(500);
   }
 };
 
@@ -201,10 +219,12 @@ const addProductToShop = async (req, res) => {
       { _id: req.params.id },
       { $push: { shop: req.body } }
     );
-    console.log("\u001b[35m" + "Added new product to shop" + "\u001b[0m");
-    res.send("OK - 200 ");
+
+    logger.info(`Added new product to shop of business: ${req.params.id}`);
+    return res.sendStatus(200);
   } catch (err) {
-    res.status(500).json(err);
+    logger.error(err);
+    return res.sendStatus(500);
   }
 };
 
@@ -215,10 +235,14 @@ const removeProductFromShop = async (req, res) => {
       { _id: req.params.id },
       { $pull: { shop: { id: req.body.productID } } }
     );
-    console.log("\u001b[35m" + "Removed product from shop" + "\u001b[0m");
-    res.send("OK - 200 ");
+
+    logger.info(
+      `Removed product: ${req.body.productID} from shop: ${req.params.id}`
+    );
+    return res.sendStatus(200);
   } catch (err) {
-    res.status(500).json(err);
+    logger.error(err);
+    return res.sendStatus(500);
   }
 };
 
@@ -226,10 +250,12 @@ const removeProductFromShop = async (req, res) => {
 const getShop = async (req, res) => {
   try {
     const business = await Business.findById(req.params.id);
-    res.status(200).json(business.shop);
-    console.log("\u001b[35m" + "Get shop" + "\u001b[0m");
+
+    logger.info(`Get shop of business: ${req.params.id}`);
+    return res.status(200).json(business.shop);
   } catch (err) {
-    res.status(500).json(err);
+    logger.error(err);
+    return res.sendStatus(500);
   }
 };
 
@@ -244,7 +270,8 @@ const addNewPictureToGallery = async (req, res) => {
     console.log("Added new picture");
     res.send("OK - 200 ");
   } catch (err) {
-    res.status(500).json(err);
+    logger.error(err);
+    return res.sendStatus(500);
   }
 };
 
@@ -261,7 +288,8 @@ const removePictureFromGallery = async (req, res) => {
     console.log("Removed picture");
     res.status(200).send();
   } catch (error) {
-    res.status(400).send();
+    logger.error(err);
+    return res.sendStatus(500);
   }
 };
 
@@ -272,7 +300,8 @@ const getGallery = async (req, res) => {
     res.status(200).json(user.gallery);
     console.log("\u001b[35m" + "Get gallery" + "\u001b[0m");
   } catch (err) {
-    res.status(500).json(err);
+    logger.error(err);
+    return res.sendStatus(500);
   }
 };
 
@@ -286,7 +315,8 @@ const updateBackgroundPicture = async (req, res) => {
     console.log("Updated background picture");
     res.status(200).json();
   } catch (err) {
-    res.status(500).json(err);
+    logger.error(err);
+    return res.sendStatus(500);
   }
 };
 
@@ -324,7 +354,8 @@ const getTopFive = async (req, res) => {
     const top5 = sortByTotalStars.slice(0, 5);
     res.status(200).json(top5);
   } catch (err) {
-    res.status(500).json(err);
+    logger.error(err);
+    return res.sendStatus(500);
   }
 };
 
@@ -435,7 +466,8 @@ const quickAppointment = async (req, res) => {
 
     res.status(200).json(earliest);
   } catch (err) {
-    res.status(500).json(err);
+    logger.error(err);
+    return res.sendStatus(500);
   }
 };
 
