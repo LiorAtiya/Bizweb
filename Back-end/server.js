@@ -29,6 +29,9 @@ app.use('/api/auth', authRoute);
 app.use('/api/business', businessRoute);
 app.use('/api/calender', calenderRoute);
 
+app.get("/", () => {
+    console.log('Hello from Bizweb server')
+})
 //Connection to server
 const port = process.env.PORT || 5015;
 app.listen(port, () => {
