@@ -1,0 +1,7 @@
+[submodule "client"]
+    path = client
+    url = https://github.com/LiorAtiya/Bizweb-client.git
+
+[submodule "server"]
+    path = server
+    url = https://github.com/LiorAtiya/Bizweb-server.git

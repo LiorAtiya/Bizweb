@@ -4,20 +4,20 @@
   "description": "A platform for creating a website for any business",
   "main": "index.js",
   "scripts": {
-    "server": "npm run watch --prefix Back-end",
-    "client": "npm run start --prefix Front-end",
+    "server": "npm run watch --prefix server",
+    "client": "npm run start --prefix client",
     "start": "npm run server & npm run client"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LiorAtiya/Facework.git"
+    "url": "git+https://github.com/LiorAtiya/Bizweb.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/LiorAtiya/Facework/issues"
+    "url": "https://github.com/LiorAtiya/Bizweb/issues"
   },
-  "homepage": "https://github.com/LiorAtiya/Facework#readme",
+  "homepage": "https://github.com/LiorAtiya/Bizweb#readme",
   "dependencies": {
     "concurrently": "^7.6.0"
   }
